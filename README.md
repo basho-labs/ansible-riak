@@ -93,7 +93,7 @@ First we set the role to the riak_cluster group as defined in the inventory.  Th
 Dependencies
 ------------
 
-basho.riak-common
+Depends on the basho.riak-common role.
 
 
 
