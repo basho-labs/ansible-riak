@@ -1,0 +1,2 @@
+riak_usr_lib: /usr/lib64
+riak_package: riak-{{ riak_version }}-{{ riak_package_release }}.el6

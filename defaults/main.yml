@@ -1,0 +1,29 @@
+---
+riak_aae: "on"
+riak_backend: bitcask
+riak_custom_package: no
+riak_filesystem: ext4
+riak_handoff_port: 8099
+riak_http_port: 8098
+riak_iface: eth0
+riak_ip_addr: "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"
+riak_node_name: "riak@{{ riak_ip_addr }}"
+riak_pb_bind_ip: 0.0.0.0
+riak_http_bind_ip: 0.0.0.0
+riak_cluster_mgr_bind_ip: 0.0.0.0
+riak_log_rotate: 5
+riak_mountpoint: /
+riak_mount_options: noatime,barrier=0,errors=remount-ro 
+riak_node_name: "riak@{{ riak_ip_addr }}"
+riak_package_release: 1
+riak_partition: /dev/mapper/VolGroup-lv_root
+riak_pb_backlog: 256
+riak_pb_port: 8087
+riak_physical_disks:
+  - sda
+riak_ring_size: 64
+riak_tune_disks: false
+riak_tune_os: false
+riak_scheduler: noop
+riak_search: "false"
+riak_version: 1.4.7

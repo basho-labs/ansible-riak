@@ -1,0 +1,6 @@
+- hosts: riak_cluster
+  sudo: True
+  roles:
+  - { role: riak, tags: ["riak"] }
+
+- form_cluster.yml
