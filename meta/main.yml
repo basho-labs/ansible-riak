@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  author: James Martin
+  author: James Martin <jmartin@basho.com>
   description: Installs and configures Riak, a distributed, highly available NoSQL database.
   company: Basho
   license: Apache
