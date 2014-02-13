@@ -6,7 +6,7 @@ This role will setup Riak on a node. It will ***not*** build a cluster.  In orde
 Requirements
 ------------
 
-None
+Tested with Riak 1.4.7 on CentOS 6 and Ubuntu Precise.
 
 Role Variables
 --------------
@@ -39,8 +39,13 @@ riak_partition: is the device that the riak_mountpoint is/will be mounted to.  Y
 ### All of the Variables
 
 
-Variables listed with "OS Specific" and "Install specific" have values defined in `vars/<ansible_os_family>.yml`.
+If you have trouble seeing this list, please take a look at this link:
 
+[https://github.com/basho/ansible-riak/blob/master/README.md](https://github.com/basho/ansible-riak/blob/master/README.md
+)
+
+
+Variables listed with "OS Specific" and "Install specific" have values defined in `vars/<ansible_os_family>.yml`.
 
 
 | Name           | Default Value | Description                        |
@@ -72,7 +77,7 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 | riak_search    | "false"       | enable/disable for configuring Riak search. |
 | riak_tune_disks | no | enables  disk tunings |
 | riak_usr_lib   |OS specific    | the path to Riak libraries.
-| riak_version   | 1.4.7         | version of Riak you want to install.
+| riak_version   | 1.4.7         | version of Riak you want to install..
 
 
 Playbooks
