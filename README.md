@@ -11,7 +11,7 @@ Tested with Riak 1.4.7 on CentOS 6 and Ubuntu Precise.
 Role Variables
 --------------
 
-If you have trouble seeing the tables below, please [read the documentation on Github](https://github.com/basho/ansible-riak/blob/master/README.md):
+If you have trouble seeing the tables below, please [read the documentation on Github](https://github.com/basho/ansible-riak/blob/master/README.md).
 
 
 **Pay close attention** to the following variables as they will tune, affect, and possible **make your system unusable**.  They are settings to tune the operating system and filesystem.
