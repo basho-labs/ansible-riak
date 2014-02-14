@@ -65,11 +65,15 @@ net.ipv4.tcp_tw_reuse = 1
 
 # Increases the TCP max buffer size settable using setsockopt().
 {% if riak_net_speed=='10Gb' %}
+net.core.wmem_default = 134217728
+net.core.rmem_default = 134217728
 net.core.rmem_max = 134217728
 net.core.wmem_max = 134217728
 {% endif %}
 
 {% if riak_net_speed=='1Gb' %}
+net.core.wmem_default = 8388608
+net.core.rmem_default = 8388608
 net.core.rmem_max = 8388608
 net.core.wmem_max = 8388608
 net.core.optmem_max = 8388608
