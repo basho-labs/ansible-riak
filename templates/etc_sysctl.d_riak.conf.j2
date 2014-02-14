@@ -1,0 +1,104 @@
+# Enables a fix for 'time-wait assassination hazards in tcp', described in RFC 1337 
+# by causing the kernel to drop RST packets for sockets in the time-wait state
+net.ipv4.tcp_rfc1337 = 1 
+
+# TCP/IP normally allows windows up to 65535 bytes. For really fast networks, this # 
+#may not be enough. The window scaling options allows for almost gigabyte windows, 
+# which is good for high bandwidth*delay products.
+net.ipv4.tcp_window_scaling = 1
+
+# Workaround for buggy remote TCP, will most likely have no effect on the local 
+# network.
+net.ipv4.tcp_workaround_signed_windows = 1
+
+# Enables selective acknowledgements, reducing retransmit bandwidth.
+net.ipv4.tcp_sack = 1
+
+# Enables the Forward Acknowledgement system, which works on top of SACK. 
+# Significantly improves packet loss recovery.
+net.ipv4.tcp_fack = 1
+
+# Disables TCP PreQueue processing to improve request latency. The effectiveness of 
+# this setting is debated.
+net.ipv4.tcp_low_latency = 1
+
+# Disables MTU probing except when an ICMP black hole is detected. 
+# Avoids MTU black holes.
+
+net.ipv4.tcp_mtu_probing = 1
+
+# Increases the system limit for open files
+fs.file-max = 524288
+
+# Increases the length of the processor input queue.
+net.core.netdev_max_backlog = 300000
+
+# Enables receive buffer and TCP window size autotuning for each connection
+net.ipv4.tcp_moderate_rcvbuf = 1
+
+# Provides better performance over high bandwidth networks than [New] Reno. Generally 
+# regarded as safer than cubic.
+net.ipv4.tcp_congestion_control = htcp
+
+# Increases the socket listen backlog to support request bursts.
+net.core.somaxconn = 40000
+
+# Increases the maximum number of remembered connection requests which did not receive 
+# an acknowledgment from connecting client. Must be less than or equal to somaxconn 
+# or it will be truncated.
+net.ipv4.tcp_max_syn_backlog = 40000
+
+# Reduces bandwidth loss on fast networks by allowing for very large windows.
+net.ipv4.tcp_window_scaling = 1
+
+# Decreases the amount of time connections remain in the FIN-WAIT-2 state, therefore 
+# cleaning up broken connections faster.
+net.ipv4.tcp_fin_timeout = 15
+
+# Increase the frequency of keepalive probes, identifying and timing out dead 
+# connections faster.
+net.ipv4.tcp_keepalive_intvl = 30
+
+# Enables reuse of TIME-WAIT sockets to reduce the time spent constructing 
+# connections. This setting is safe for all Riak protocols.
+net.ipv4.tcp_tw_reuse = 1
+
+# Increases the TCP max buffer size settable using setsockopt().
+{% if riak_net_speed=='10Gb' %}
+net.core.wmem_default = 134217728
+net.core.rmem_default = 134217728
+net.core.rmem_max = 134217728
+net.core.wmem_max = 134217728
+{% endif %}
+
+{% if riak_net_speed=='1Gb' %}
+net.core.wmem_default = 8388608
+net.core.rmem_default = 8388608
+net.core.rmem_max = 8388608
+net.core.wmem_max = 8388608
+net.core.optmem_max = 8388608
+{% endif %}
+
+# Increases the Linux autotuning TCP buffer limit
+{% if riak_net_speed=='10Gb' %}
+net.ipv4.tcp_mem = 134217728 134217728 134217728
+net.ipv4.tcp_rmem = 4096 277750 134217728
+net.ipv4.tcp_wmem = 4096 277750 134217728
+{% endif %}
+
+{% if riak_net_speed=='1Gb' %}
+net.ipv4.tcp_mem = 8388608 8388608 8388608
+net.ipv4.tcp_rmem = 4096 87380 8388608
+net.ipv4.tcp_wmem = 4096 65536 8388608
+{% endif %}
+
+# Instructs the kernel to swap only as a last resort
+vm.swappiness = 0
+
+# Limits the maximum memory used to 200MB before pdflush is involved. 
+# The default 20% of total system memory can overwhelm the storage system once 
+# flushed.
+vm.dirty_bytes = 209715200
+
+# The lower threshold for vm.dirty_bytes
+vm.dirty_background_bytes = 104857600

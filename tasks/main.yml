@@ -36,8 +36,9 @@
 
 - name: create sysctl.d
   file: dest=/etc/sysctl.d state=directory
+
 - name: configure sysctl
-  copy: src=etc_sysctl.d_riak.conf dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
+  template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
   notify: update sysctl
 
 - name: copying custom beams

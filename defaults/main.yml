@@ -14,6 +14,7 @@ riak_cluster_mgr_bind_ip: 0.0.0.0
 riak_log_rotate: 5
 riak_mountpoint: /
 riak_mount_options: noatime,barrier=0,errors=remount-ro 
+riak_net_speed: 1Gb
 riak_node_name: "riak@{{ riak_ip_addr }}"
 riak_package_release: 1
 riak_partition: /dev/mapper/VolGroup-lv_root

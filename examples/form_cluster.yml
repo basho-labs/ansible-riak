@@ -5,7 +5,7 @@
     riak: command=ping
     register: riak_outputs
 
-- hosts: riak_cluster[1]:riak_cluster[-1]
+- hosts: riak_cluster:!riak_cluster[0]
   vars:
      primary_node: "{{ hostvars[groups['riak_cluster'][0]]['riak_outputs']['node_name'] }}"
   sudo: True
