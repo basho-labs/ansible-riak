@@ -60,7 +60,8 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 | riak_ip_addr   | "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"| shortcut for the ip address associated with riak_iface
 | riak_log_rotate| 5             | number of days for log rotation |
 | riak_mount_options |noatime,barrier=0,errors=remount-ro | optmized mount options for Riak |
-| riak_mountpoint| /             | mountpoint where Riak data is installed
+| riak_mountpoint| /             | mountpoint where Riak data is installed|
+| riak_net_speed| 1Gb             |speed of network which Riak using, used to optimize sysctl tunings.|
 | riak_node_name | riak@{{ riak_ip_addr }} | the name you give the Riak node |
 | riak_package_release| 1        | the package release version |
 | riak_partition |  /dev/mapper/VolGroup-lv_root   | device/partition that holds mounted Riak data
