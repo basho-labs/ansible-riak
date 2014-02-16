@@ -80,10 +80,10 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 Playbooks
 ------------
 
-There are some sample playbooks in the [examples/](examples/) directory as well as a typical hosts file.
-Take a look at [setup_riak.yml](examples/setup_riak.yml).
+There are some sample playbooks in the [examples/](https://github.com/basho/ansible-riak/tree/master/examples) directory as well as a typical hosts file.
+Take a look at [setup_riak.yml](https://github.com/basho/ansible-riak/blob/master/examples/setup_riak.yml).
 
-First we set the role to the riak_cluster group as defined in the inventory.  Then we call the [form_cluster.yml](examples/form_cluster.yml) playbook to actually join the cluster.  The following happens:
+First we set the role to the riak_cluster group as defined in the inventory.  Then we call the [form_cluster.yml](https://github.com/basho/ansible-riak/blob/master/examples/form_cluster.yml) playbook to actually join the cluster.  The following happens:
 
 * the Riak node name of the first node is established
 * all nodes in the group join that node
