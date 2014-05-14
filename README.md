@@ -6,7 +6,7 @@ This role will setup Riak on a node. It will ***not*** build a cluster.  In orde
 Requirements
 ------------
 
-Tested with Riak 1.4.7 on CentOS 6 and Ubuntu Precise.
+Tested with Riak 1.4.8 on CentOS 6 and Ubuntu Precise.
 
 Role Variables
 --------------

@@ -1,7 +1,7 @@
 [riak_cluster]
-10.42.0.6 
-10.42.0.7 
-10.42.0.8 
+riak-01 ansible_ssh_host=10.42.0.6 ansible_ssh_port=22
+riak-02 ansible_ssh_host=10.42.0.7 ansible_ssh_port=22
+riak-03 ansible_ssh_host=10.42.0.8 ansible_ssh_port=22
 
 [riak_servers:children]
 riak_cluster
