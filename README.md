@@ -6,7 +6,7 @@ This role will setup Riak on a node. It will ***not*** build a cluster.  In orde
 Requirements
 ------------
 
-Tested with Riak 1.4.7 on CentOS 6 and Ubuntu Precise.
+Tested with Riak 1.4.8 on CentOS 6 and Ubuntu Precise.
 
 Role Variables
 --------------
@@ -50,7 +50,7 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 | riak_backend   | bitcask       | default backend for Riak           |
 | riak_cluster_mgr_bind_ip| 0.0.0.0       | the IP address of the interface used for Riak cluster manager (riak-ee) |
 | riak_custom_beams| false       | a path to pre-compiled custom beams |
-| riak_custom_package| no     | specify a path on the ansible control to a custom Riak package.|
+| riak_custom_package| no     | specify a path on the Ansible control, or HTTP URL, to a custom Riak package.|
 | riak_filesystem | ext4         | filesystem that's used on Riak's data volume |
 | riak_handoff_port | 8099       | handoff port                       |
 | riak_handoff_wait | 600       | The number of seconds to wait until hand offs are finished |   
@@ -104,7 +104,10 @@ License
 
 Apache
 
-Author Information
+Maintainer Information
 ------------------
 
-jmartin@baso.com
+- James Martin (<jmartin@basho.com>)
+- Bryan Hunt (<bhunt@basho.com>)
+- Hector Castro (<hector@basho.com>)
+

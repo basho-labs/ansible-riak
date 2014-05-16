@@ -1,0 +1,65 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+# Ensure basho.riak-common dependency is in place
+if [ "up", "provision" ].include?(ARGV.first) && File.directory?("roles") &&
+  !(File.directory?("roles/basho.riak-common") || File.symlink?("roles/basho.riak-common"))
+  system("ansible-galaxy install -r roles.txt -p roles")
+end
+
+# Grab local IP address for the proxy
+def local_ip
+  @local_ip ||= begin
+    orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true
+
+    UDPSocket.open do |s|
+      s.connect "64.233.187.99", 1
+      s.addr.last
+    end
+  ensure
+    Socket.do_not_reverse_lookup = orig
+  end
+end
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
+    cluster.vm.box = if ENV["ANSIBLE_RIAK_OS"] == "UBUNTU"
+      "chef/ubuntu-12.04"
+    elsif ENV["ANSIBLE_RIAK_OS"] == "CENTOS"
+      "chef/centos-6.5"
+    else
+      "chef/ubuntu-12.04"
+    end
+
+  # Wire up the proxy
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    cluster.proxy.http     = "http://#{local_ip}:8123/"
+    cluster.proxy.https    = "http://#{local_ip}}:8123/"
+    cluster.proxy.no_proxy = "localhost,127.0.0.1"
+  end
+
+  (6..8).each_with_index do |last_octet, index|
+    index = index + 1
+
+    cluster.vm.define "riak-0#{index}" do |machine|
+      machine.vm.hostname = "riak-0#{index}"
+      machine.vm.network "private_network", ip: "10.42.0.#{last_octet}"
+
+      if (index) == 3
+        machine.vm.provision "ansible" do |ansible|
+          ansible.playbook = "./setup_riak.yml"
+          ansible.inventory_path = "./hosts"
+          ansible.raw_arguments = [ "-T 30" ]
+
+          ansible.extra_vars = {
+            riak_iface: "eth1",
+          }
+
+          ansible.verbose = "vvvv"
+          ansible.limit = "all"
+        end
+      end
+    end
+  end
+end

@@ -4,7 +4,11 @@
 
 - name: copy custom riak package
   copy: src={{ riak_custom_package }} dest=/tmp
-  when: riak_custom_package != False
+  when: riak_custom_package != False and riak_custom_package.find('http') == -1 
+
+- name: copy custom riak package from remote
+  action: get_url url={{ riak_custom_package }} dest=/tmp/
+  when: riak_custom_package != False and riak_custom_package.find('http') != -1 
 
 - name: set riak packagename
   set_fact: riak_package=/tmp/{{ riak_custom_package|basename }} state=present
@@ -26,7 +30,7 @@
   copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf owner=root group=root mode=0644
 
 - name: mount the riak volume with optmized settings
-  mount: name={{ riak_mountpoint }} src={{ riak_partition }} opts="{{ riak_mount_options }}" fstype={{ riak_filesystem }} state=mounted
+  mount: name={{ riak_mountpoint }} src={{ riak_partition }} opts="{{riak_mount_options}}" fstype="{{riak_filesystem}}" state=mounted
   when: riak_tune_disks
 
 - name: confgure rc.local
@@ -44,7 +48,7 @@
 - name: copying custom beams
   copy: src={{ item }} dest="{{ riak_patch_dir }}/"
   with_fileglob:
-  - "{{ riak_custom_beams_dir }}/*.beam"
+  - "{{riak_custom_beams_dir}}/*.beam"
   when: riak_custom_beams_dir is defined
   notify:
   - restart riak
@@ -79,5 +83,3 @@
 - name: ping riak
   riak: command=ping
   register: info
-
-
