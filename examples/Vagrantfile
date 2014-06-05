@@ -24,13 +24,13 @@ def local_ip
 end
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
-    cluster.vm.box = if ENV["ANSIBLE_RIAK_OS"] == "UBUNTU"
-      "chef/ubuntu-12.04"
-    elsif ENV["ANSIBLE_RIAK_OS"] == "CENTOS"
-      "chef/centos-6.5"
-    else
-      "chef/ubuntu-12.04"
-    end
+  cluster.vm.box = if ENV["ANSIBLE_RIAK_OS"] == "UBUNTU"
+    "chef/ubuntu-12.04"
+  elsif ENV["ANSIBLE_RIAK_OS"] == "CENTOS"
+    "chef/centos-6.5"
+  else
+    "chef/ubuntu-12.04"
+  end
 
   # Wire up the proxy
   if Vagrant.has_plugin?("vagrant-proxyconf")
