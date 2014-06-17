@@ -1,7 +1,7 @@
 ---
-riak_aae: "on"
+riak_aae: active
 riak_backend: bitcask
-riak_custom_package: no
+riak_custom_package: yes
 riak_filesystem: ext4
 riak_handoff_port: 8099
 riak_http_port: 8098
@@ -26,5 +26,6 @@ riak_ring_size: 64
 riak_tune_disks: false
 riak_tune_os: false
 riak_scheduler: noop
-riak_search: "false"
-riak_version: 1.4.9
+riak_search: "off"
+riak_strong_consistency: "off"
+riak_version: 2.0.0beta7

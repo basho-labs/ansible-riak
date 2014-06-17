@@ -55,16 +55,8 @@
   - wait for http
   - wait for kv
 
-- name: configure app.config
-  template: src=etc_riak_app.config.j2 dest=/etc/riak/app.config
-  tags: configfiles
-  notify:
-  - restart riak
-  - wait for http
-  - wait for kv
-
-- name: configure vm.args
-  template: src=etc_riak_vm.args.j2 dest=/etc/riak/vm.args
+- name: configure riak.conf
+  template: src=etc_riak.conf.j2 dest=/etc/riak/riak.conf
   tags: configfiles
   notify:
   - restart riak
