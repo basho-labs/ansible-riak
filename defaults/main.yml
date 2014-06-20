@@ -1,7 +1,7 @@
 ---
 riak_aae: active
 riak_backend: bitcask
-riak_custom_package: no
+riak_custom_package: yes
 riak_filesystem: ext4
 riak_handoff_port: 8099
 riak_http_port: 8098
