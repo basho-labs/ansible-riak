@@ -56,7 +56,7 @@
   - wait for kv
 
 - name: configure riak.conf
-  template: src=etc_riak.conf.j2 dest=/etc/riak/riak.conf
+  template: src=etc_riak_riak.conf.j2 dest=/etc/riak/riak.conf
   tags: configfiles
   notify:
   - restart riak
