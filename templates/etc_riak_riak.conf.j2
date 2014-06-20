@@ -4,12 +4,12 @@
 ## file: the file specified by log.console.file
 ## console: to standard output (seen when using `riak attach-direct`)
 ## both: log.console.file and standard out.
-## 
-## Default: both
-## 
+##
+## Default: file
+##
 ## Acceptable values:
 ##   - one of: off, file, console, both
-log.console = both
+log.console = file
 
 ## The severity level of the console log, default is 'info'.
 ## 
@@ -98,9 +98,9 @@ log.crash.rotation = $D0
 log.crash.rotation.keep = {{ riak_log_rotate }}
 
 ## Name of the Erlang node
-## 
-## Default: dev1@127.0.0.1
-## 
+##
+## Default: riak@127.0.0.1
+##
 ## Acceptable values:
 ##   - text
 nodename = {{ riak_node_name }}
@@ -185,37 +185,37 @@ ring_size = {{ riak_ring_size }}
 dtrace = off
 
 ## Platform-specific installation paths (substituted by rebar)
-## 
-## Default: ./bin
-## 
+##
+## Default: /usr/sbin
+##
 ## Acceptable values:
 ##   - the path to a directory
 platform_bin_dir = /usr/sbin
 
-## 
-## Default: ./data
-## 
+##
+## Default: /var/lib/riak
+##
 ## Acceptable values:
 ##   - the path to a directory
 platform_data_dir = /var/lib/riak
 
-## 
-## Default: ./etc
-## 
+##
+## Default: /etc/riak
+##
 ## Acceptable values:
 ##   - the path to a directory
 platform_etc_dir = /etc
 
-## 
-## Default: ./lib
-## 
+##
+## Default: /usr/lib/riak/lib
+##
 ## Acceptable values:
 ##   - the path to a directory
 platform_lib_dir = {{ riak_usr_lib }}/riak/lib
 
-## 
-## Default: ./log
-## 
+##
+## Default: /var/log/riak
+##
 ## Acceptable values:
 ##   - the path to a directory
 platform_log_dir = /var/log/riak
@@ -231,18 +231,18 @@ strong_consistency = {{ riak_strong_consistency }}
 
 ## listener.http.<name> is an IP address and TCP port that the Riak
 ## HTTP interface will bind.
-## 
-## Default: 127.0.0.1:10018
-## 
+##
+## Default: 127.0.0.1:8098
+##
 ## Acceptable values:
 ##   - an IP/port pair, e.g. 127.0.0.1:10011
 listener.http.internal = {{ riak_http_bind_ip }}:{{ riak_http_port }}
 
 ## listener.protobuf.<name> is an IP address and TCP port that the Riak
 ## Protocol Buffers interface will bind.
-## 
-## Default: 127.0.0.1:10017
-## 
+##
+## Default: 127.0.0.1:8087
+##
 ## Acceptable values:
 ##   - an IP/port pair, e.g. 127.0.0.1:10011
 listener.protobuf.internal = {{ riak_pb_bind_ip }}:{{ riak_pb_port }}
@@ -263,7 +263,7 @@ protobuf.backlog = {{ riak_pb_backlog }}
 ## 
 ## Acceptable values:
 ##   - an IP/port pair, e.g. 127.0.0.1:10011
-## listener.https.internal = 127.0.0.1:10018
+## listener.https.internal = 127.0.0.1:8098
 
 ## How Riak will repair out-of-sync keys. Some features require
 ## this to be set to 'active', including search.
@@ -403,7 +403,7 @@ leveldb.maximum_memory.percent = 70
 ## 
 ## Acceptable values:
 ##   - on or off
-search = {{ riak_search}}
+search = {{ riak_search }}
 
 ## How long Riak will wait for Solr to start. The start sequence
 ## will be tried twice. If both attempts timeout, then the Riak node
@@ -419,21 +419,21 @@ search.solr.start_timeout = 30s
 
 ## The port number which Solr binds to.
 ## NOTE: Binds on every interface.
-## 
-## Default: 10014
-## 
+##
+## Default: 8093
+##
 ## Acceptable values:
 ##   - an integer
-search.solr.port = 10014
+search.solr.port = 8093
 
 ## The port number which Solr JMX binds to.
 ## NOTE: Binds on every interface.
-## 
-## Default: 10013
-## 
+##
+## Default: 8985
+##
 ## Acceptable values:
 ##   - an integer
-search.solr.jmx_port = 10013
+search.solr.jmx_port = 8985
 
 ## The options to pass to the Solr JVM.  Non-standard options,
 ## i.e. -XX, may not be portable across JVM implementations.
