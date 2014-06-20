@@ -18,7 +18,7 @@ riak_net_speed: 1Gb
 riak_node_name: "riak@{{ riak_ip_addr }}"
 riak_package_release: 1
 riak_partition: /dev/mapper/VolGroup-lv_root
-riak_pb_backlog: 256
+riak_pb_backlog: 128
 riak_pb_port: 8087
 riak_physical_disks:
   - sda
