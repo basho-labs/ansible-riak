@@ -15,17 +15,17 @@ if [ `uname -s` = 'SunOS' -a "${POSIX_SHELL}" != "true" ]; then
 fi
 unset POSIX_SHELL # clear it so if we invoke other scripts, they run as ksh as well
 
-RUNNER_SCRIPT_DIR={{runner_script_dir}}
+RUNNER_SCRIPT_DIR=/usr/sbin
 RUNNER_SCRIPT=${0##*/}
 
-RUNNER_BASE_DIR={{runner_base_dir}}
-RUNNER_ETC_DIR={{runner_etc_dir}}
-RUNNER_LOG_DIR={{runner_log_dir}}
-RUNNER_LIB_DIR={{runner_lib_dir}}
-RUNNER_PATCH_DIR={{runner_patch_dir}}
-PIPE_DIR={{pipe_dir}}
-RUNNER_USER={{runner_user}}
-APP_VERSION={{app_version}}
+RUNNER_BASE_DIR=/usr/lib/riak
+RUNNER_ETC_DIR=/etc/riak
+RUNNER_LOG_DIR=/var/log/riak
+RUNNER_LIB_DIR=/usr/lib/riak/lib
+RUNNER_PATCH_DIR=/usr/lib/riak/lib/basho-patches
+PIPE_DIR=/tmp/riak
+RUNNER_USER=riak
+APP_VERSION=2.0.0beta7
 
 # Variables needed to support creation of .pid files
 # PID directory and pid file name of this app
@@ -36,13 +36,13 @@ PID_FILE=$PID_DIR/$RUNNER_SCRIPT.pid
 
 # Threshold where users will be warned of low ulimit file settings
 # default it if it is not set
-ULIMIT_WARN={{runner_ulimit_warn}}
+ULIMIT_WARN=65536
 if [ -z "$ULIMIT_WARN" ]; then
     ULIMIT_WARN=4096
 fi
 
 # Registered process to wait for to consider start a success
-WAIT_FOR_PROCESS={{runner_wait_process}}
+WAIT_FOR_PROCESS=riak_core_node_watcher
 
 WHOAMI=`whoami`
 
@@ -52,7 +52,7 @@ echoerr() { echo "$@" 1>&2; }
 # Extract the target node name from node.args
 NAME_ARG=`egrep '^\-name' $RUNNER_ETC_DIR/vm.args 2> /dev/null`
 if [ -z "$NAME_ARG" ]; then
-    NODENAME=`egrep '^[ \t]*nodename[ \t]*=[ \t]*' $RUNNER_ETC_DIR/{{cuttlefish_conf}} 2> /dev/null | tail -1 | cut -d = -f 2`
+    NODENAME=`egrep '^[ \t]*nodename[ \t]*=[ \t]*' $RUNNER_ETC_DIR/riak.conf 2> /dev/null | tail -1 | cut -d = -f 2`
     if [ -z "$NODENAME" ]; then
         echoerr "vm.args needs to have a -name parameter."
         echoerr "  -sname is not supported."
@@ -74,7 +74,7 @@ fi
 # Extract the target cookie
 COOKIE_ARG=`grep '^\-setcookie' $RUNNER_ETC_DIR/vm.args 2> /dev/null`
 if [ -z "$COOKIE_ARG" ]; then
-    COOKIE=`egrep '^[ \t]*distributed_cookie[ \t]*=[ \t]*' $RUNNER_ETC_DIR/{{cuttlefish_conf}} 2> /dev/null | tail -1 | cut -d = -f 2`
+    COOKIE=`egrep '^[ \t]*distributed_cookie[ \t]*=[ \t]*' $RUNNER_ETC_DIR/riak.conf 2> /dev/null | tail -1 | cut -d = -f 2`
     if [ -z "$COOKIE" ]; then
         echoerr "vm.args needs to have a -setcookie parameter."
         exit 1
@@ -86,7 +86,7 @@ fi
 # Extract the target net_ticktime
 NET_TICKTIME_ARG=`grep '^\-kernel net_ticktime' $RUNNER_ETC_DIR/vm.args 2> /dev/null`
 if [ -z "$NET_TICKTIME_ARG" ]; then
-    NET_TICKTIME=`egrep '^[ \t]*erlang.distribution.net_ticktime[ \t]*=[ \t]*' $RUNNER_ETC_DIR/{{cuttlefish_conf}} 2> /dev/null | tail -1 | cut -d = -f 2`
+    NET_TICKTIME=`egrep '^[ \t]*erlang.distribution.net_ticktime[ \t]*=[ \t]*' $RUNNER_ETC_DIR/riak.conf 2> /dev/null | tail -1 | cut -d = -f 2`
     if [ -z "$NET_TICKTIME" ]; then
         NET_TICKTIME_ARG=""
     else
@@ -95,7 +95,7 @@ if [ -z "$NET_TICKTIME_ARG" ]; then
 fi
 
 # Optionally specify a NUMA policy
-NUMACTL_ARG="{{numactl_arg}}"
+NUMACTL_ARG=""
 if [ -z "$NUMACTL_ARG" ]
 then
     NUMACTL=""
@@ -124,11 +124,11 @@ NODETOOL_LITE="$ERTS_PATH/escript $ERTS_PATH/nodetool"
 ## Are we using cuttlefish (http://github.com/basho/cuttlefish)
 ## for configuration. This needs to come after the $ERTS_PATH
 ## definition
-CUTTLEFISH="{{cuttlefish}}"
+CUTTLEFISH="on"
 if [ -z "$CUTTLEFISH" ]; then
     CUTTLEFISH_COMMAND_PREFIX=""
 else
-    CUTTLEFISH_COMMAND_PREFIX="$ERTS_PATH/escript $ERTS_PATH/cuttlefish -e $RUNNER_ETC_DIR -s $RUNNER_LIB_DIR -d {{platform_data_dir}}/generated.configs -c $RUNNER_ETC_DIR/{{cuttlefish_conf}}"
+    CUTTLEFISH_COMMAND_PREFIX="$ERTS_PATH/escript $ERTS_PATH/cuttlefish -e $RUNNER_ETC_DIR -s $RUNNER_LIB_DIR -d /var/lib/riak/generated.configs -c $RUNNER_ETC_DIR/riak.conf"
 fi
 
 # Ping node without stealing stdin
