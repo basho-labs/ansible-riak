@@ -1,0 +1,4 @@
+riak_usr_lib: /usr/lib
+riak_custom_package: http://s3.amazonaws.com/builds.basho.com/riak/develop/2.0.0beta7/ubuntu/precise/riak_2.0.0beta7-1_amd64.deb
+riak_package: riak={{ riak_version }}-{{ riak_package_release }}
+

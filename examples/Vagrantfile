@@ -23,11 +23,16 @@ def local_ip
   end
 end
 
+$platform = ENV["ANSIBLE_RIAK_OS"]
+
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
-  cluster.vm.box = if ENV["ANSIBLE_RIAK_OS"] == "UBUNTU"
+  
+  cluster.vm.box = if $platform == "UBUNTU"
     "chef/ubuntu-12.04"
-  elsif ENV["ANSIBLE_RIAK_OS"] == "CENTOS"
+  elsif $platform == "CENTOS"
     "chef/centos-6.5"
+  elsif $platform == "DEBIAN"
+    "chef/debian-7.4"
   else
     "chef/ubuntu-12.04"
   end

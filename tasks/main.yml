@@ -2,6 +2,10 @@
 - name: Add the OS specific variables
   include_vars: "{{ ansible_os_family }}.yml"
 
+- name: Add Ubuntu specific variables
+  include_vars: "Ubuntu.yml"
+  when: ansible_distribution == "Ubuntu"
+
 - name: copy custom riak package
   copy: src={{ riak_custom_package }} dest=/tmp
   when: riak_custom_package != False and riak_custom_package.find('http') == -1 
@@ -22,7 +26,7 @@
 - include: RedHat.yml
   when: ansible_os_family  == "RedHat"
 
-# Ubuntu specific package installations
+# Debian specific package installations
 - include: Debian.yml
   when: ansible_os_family  == "Debian"
 
