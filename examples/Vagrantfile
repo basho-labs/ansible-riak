@@ -28,6 +28,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
     "chef/ubuntu-12.04"
   elsif ENV["ANSIBLE_RIAK_OS"] == "CENTOS"
     "chef/centos-6.5"
+  elsif ENV["ANSIBLE_RIAK_OS"] == "DEBIAN"
+    "chef/debian-7.4"
   else
     "chef/ubuntu-12.04"
   end
