@@ -9,9 +9,5 @@
   changed_when: dpkg_result.stdout.startswith('Selecting')
   when: riak_custom_package != False
 
-# Remove following correction of defect https://github.com/basho/riak/issues/561
-- name: patch riak script
-  copy: src=usr_sbin_riak dest=/usr/sbin/riak owner=root group=root mode=0755
-
 - name: set the riak ulimit
   copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak

@@ -11,7 +11,7 @@
   when: riak_custom_package != False and riak_custom_package.find('http') == -1 
 
 - name: copy custom riak package from remote
-  action: get_url url={{ riak_custom_package }} dest=/tmp/
+  action: get_url url={{ riak_custom_package }} dest=/tmp/ validate_certs=no force=yes
   when: riak_custom_package != False and riak_custom_package.find('http') != -1 
 
 - name: set riak packagename

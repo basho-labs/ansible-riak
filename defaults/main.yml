@@ -28,4 +28,4 @@ riak_tune_os: false
 riak_scheduler: noop
 riak_search: "off"
 riak_strong_consistency: "off"
-riak_version: 2.0.0beta7
+riak_version: 2.0.0rc1
