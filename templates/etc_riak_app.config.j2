@@ -1,9 +1,8 @@
-#jinja2:variable_start_string:'(<' , variable_end_string:'>)'
 {% if riakcs_version is defined %}
   {% set riakcs_version = riakcs_version.split('-')[0] %}
 {% endif %}
 {% set riak_release = riak_version.split('.')[0:2]|join('.')|float %}
-%% riak release (< riak_release >)
+%% riak release {{ riak_release }}
 
 %% -*- mode: erlang;erlang-indent-level: 4;indent-tabs-mode: nil -*-
 %% ex: ft=erlang ts=4 sw=4 et
@@ -20,18 +19,18 @@
             %% By default the value is 5. If you anticipate a huge number of
             %% connections being initialised *simultaneously*, set this number
             %% higher.
-            {pb_backlog, (< riak_pb_backlog >)},
+            {pb_backlog, {{ riak_pb_backlog }}},
 {% if riak_release <=1.3 %}
             %% pb_ip is the IP address that the Riak Protocol Buffers interface
             %% will bind to.  If this is undefined, the interface will not run.
-            {pb_ip,   "(< riak_pb_bind_ip >)" },
+            {pb_ip,   "{{ riak_pb_bind_ip }}" },
 
             %% pb_port is the TCP port that the Riak Protocol Buffers interface
             %% will bind to
-            {pb_port, (< riak_pb_port >)}
+            {pb_port, {{ riak_pb_port }}}
 {% endif %}
 {% if riak_release >=1.4 %}
-            {pb, [ {"(< riak_pb_bind_ip >)", (< riak_pb_port >)} ]}
+            {pb, [ {"{{ riak_pb_bind_ip }}", {{ riak_pb_port }}} ]}
 {% endif %}
             ]},
  %% Riak Core config
@@ -47,11 +46,11 @@
 
               %% Default ring creation size.  Make sure it is a power of 2,
               %% e.g. 16, 32, 64, 128, 256, 512 etc
-              {ring_creation_size, (< riak_ring_size >)},
+              {ring_creation_size, {{ riak_ring_size }}},
 
               %% http is a list of IP addresses and TCP ports that the Riak
               %% HTTP interface will bind.
-              {http, [ {"(< riak_http_bind_ip >)", (< riak_http_port >)} ]},
+              {http, [ {"{{ riak_http_bind_ip }}", {{ riak_http_port }}} ]},
 
               %% https is a list of IP addresses and TCP ports that the Riak
               %% HTTPS interface will bind.
@@ -60,7 +59,7 @@
 {% if riak_ee is defined %}
               %% The cluster manager will listen for connections from remote
               %% clusters on this ip and port. Every node runs one CM.
-              {cluster_mgr, {"(< riak_cluster_mgr_bind_ip >)", (< riak_cluster_mgr_port >) }} ,
+              {cluster_mgr, {"{{ riak_cluster_mgr_bind_ip }}", {{ riak_cluster_mgr_port }} }} ,
 {% endif %}
               %% Default cert and key locations for https can be overridden
               %% with the ssl config variable, for example:
@@ -98,7 +97,7 @@
               {platform_bin_dir, "/usr/sbin"},
               {platform_data_dir, "/var/lib/riak"},
               {platform_etc_dir, "/etc/riak"},
-              {platform_lib_dir, "(< riak_usr_lib >)/riak/lib"},
+              {platform_lib_dir, "{{ riak_usr_lib }}/riak/lib"},
               {platform_log_dir, "/var/log/riak"}
              ]},
 
@@ -110,7 +109,7 @@
 {% if riakcs_version is defined %}
 
 
-            {add_paths, ["(< riak_usr_lib >)/riak-cs/lib/riak_cs-(< riakcs_version >)/ebin"]},
+            {add_paths, ["{{ riak_usr_lib }}/riak-cs/lib/riak_cs-{{ riakcs_version }}/ebin"]},
             {storage_backend, riak_cs_kv_multi_backend},
             {multi_backend_prefix_list, [{<<"0b:">>, be_blocks}]},
             {multi_backend_default, be_default},
@@ -124,7 +123,7 @@
                 ]}
              ]},
 {% else %}
-            {storage_backend, riak_kv_(< riak_backend >)_backend},
+            {storage_backend, riak_kv_{{ riak_backend }}_backend},
 {% endif %}
 
 
@@ -136,7 +135,7 @@
             %% Enable active anti-entropy subsystem + optional debug messages:
             %%   {anti_entropy, {on|off, []}},
             %%   {anti_entropy, {on|off, [debug]}},
-            {anti_entropy, { (< riak_aae >), []}},
+            {anti_entropy, { {{ riak_aae }}, []}},
 
             %% Restrict how fast AAE can build hash trees. Building the tree
             %% for a given partition requires a full scan over that partition's
@@ -237,7 +236,7 @@
  %% Riak Search Config
  {riak_search, [
                 %% To enable Search functionality set this 'true'.
-                {enabled, (< riak_search >)}
+                {enabled, {{ riak_search }}}
                ]},
 
  %% Merge Index Config
@@ -296,8 +295,8 @@
             %%
             {handlers, [
                            {lager_file_backend, [
-                               {"/var/log/riak/error.log", error, 10485760, "$D0", (< riak_log_rotate >)},
-                               {"/var/log/riak/console.log", info, 10485760, "$D0", (< riak_log_rotate >)}
+                               {"/var/log/riak/error.log", error, 10485760, "$D0", {{ riak_log_rotate }}},
+                               {"/var/log/riak/console.log", info, 10485760, "$D0", {{ riak_log_rotate }}}
                            ]}
                        ] },
 
