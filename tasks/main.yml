@@ -43,7 +43,7 @@
 
 - name: configure sysctl
   template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
-  notify: update sysctl
+  notify: check proc writeable
 
 - name: copying custom beams
   copy: src={{ item }} dest="{{ riak_patch_dir }}/"

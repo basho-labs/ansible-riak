@@ -1,7 +1,12 @@
 ---
+- name: check proc writeable
+  register: proc_writeable
+  command: test -w /proc
+  ignore_errors: yes
+
 - name: update sysctl
   command: sysctl -e -p /etc/sysctl.d/riak.conf
-  ignore_errors: yes
+  when: proc_writeable|success
 
 - name: source rclocal
   command: /bin/bash /etc/rc.local
