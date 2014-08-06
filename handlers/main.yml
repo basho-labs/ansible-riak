@@ -1,6 +1,7 @@
 ---
 - name: update sysctl
   command: sysctl -e -p /etc/sysctl.d/riak.conf
+  ignore_errors: yes
 
 - name: source rclocal
   command: /bin/bash /etc/rc.local
