@@ -1,7 +1,7 @@
 ---
 - name: check proc writeable
   register: proc_writeable
-  command: test -w /proc
+  command: test -w /proc/sys/vm/swappiness
   ignore_errors: yes
 
 - name: update sysctl
