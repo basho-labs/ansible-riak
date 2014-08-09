@@ -1,13 +1,4 @@
 ---
-- name: check proc writeable
-  register: proc_writeable
-  command: test -w /proc/sys/vm/swappiness
-  ignore_errors: yes
-
-- name: update sysctl
-  command: sysctl -e -p /etc/sysctl.d/riak.conf
-  when: proc_writeable|success
-
 - name: source rclocal
   command: /bin/bash /etc/rc.local
 
