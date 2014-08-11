@@ -27,4 +27,4 @@ riak_tune_disks: false
 riak_tune_os: false
 riak_scheduler: noop
 riak_search: "false"
-riak_version: 1.4.9
+riak_version: 1.4.10
