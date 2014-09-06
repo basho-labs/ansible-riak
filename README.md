@@ -107,7 +107,6 @@ Apache
 Maintainer Information
 ------------------
 
-- James Martin (<jmartin@basho.com>)
+- James Martin 
 - Bryan Hunt (<bhunt@basho.com>)
-- Hector Castro (<hector@basho.com>)
-
+- Hector Castro
