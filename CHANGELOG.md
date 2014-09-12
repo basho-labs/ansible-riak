@@ -1,3 +1,8 @@
+
+## v1.0.10
+
+- Default Riak version is now `1.4.10`.
+
 ## v1.0.9
 
 - Default Riak version is now `1.4.9`.

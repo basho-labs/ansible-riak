@@ -8,7 +8,7 @@
 
 - name: copy custom riak package
   copy: src={{ riak_custom_package }} dest=/tmp
-  when: riak_custom_package != False and riak_custom_package.find('http') == -1 
+  when: riak_custom_package != False and riak_custom_package.find('http') == -1
 
 - name: copy custom riak package from remote
   action: get_url url={{ riak_custom_package }} dest=/tmp/ validate_certs=no force=yes
@@ -47,7 +47,9 @@
 
 - name: configure sysctl
   template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
-  notify: update sysctl
+  notify:
+    - check proc writeable
+    - update sysctl
 
 - name: copying custom beams
   copy: src={{ item }} dest="{{ riak_patch_dir }}/"
