@@ -80,8 +80,8 @@
   wait_for: port={{ riak_http_port }}
 
 - name: wait for riak_kv service to start
-  riak: wait_for_service=kv
+  riak: wait_for_service=kv http_conn={{ riak_ip_addr }}:{{ riak_http_port }}
 
 - name: ping riak
-  riak: command=ping
+  riak: command=ping http_conn={{ riak_ip_addr }}:{{ riak_http_port }}
   register: info

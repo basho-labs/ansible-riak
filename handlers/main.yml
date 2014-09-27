@@ -9,13 +9,13 @@
   wait_for: port={{ riak_http_port }}
 
 - name: wait for kv
-  riak: wait_for_service=kv
+  riak: wait_for_service=kv http_conn={{ riak_ip_addr }}:{{ riak_http_port }}
 
 - name: commit cluster changes
-  riak: command=commit
+  riak: command=commit http_conn={{ riak_ip_addr }}:{{ riak_http_port }}
 
 - name: wait for handoffs
-  riak: wait_for_handoffs=1200
+  riak: wait_for_handoffs=1200 http_conn={{ riak_ip_addr }}:{{ riak_http_port }}
 
 - name: wait for ring
-  riak: wait_for_ring=600
+  riak: wait_for_ring=600 http_conn={{ riak_ip_addr }}:{{ riak_http_port }}
