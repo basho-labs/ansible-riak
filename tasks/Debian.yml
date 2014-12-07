@@ -1,13 +1,16 @@
 ---
-- name: install riak
+- name: Include DEB vars
+  include_vars: Debian.yml
+  tags: Debian
+
+- name: Install package cloud repo
+  shell: "curl https://packagecloud.io/install/repositories/basho/riak/script.deb | sudo bash"
+  tags: Debian
+
+- name: Install Riak for Debian
   apt: name={{ riak_package }} state=present
-  when: riak_custom_package == False
+  tags: Debian
 
-- name: install riak custom
-  command: dpkg --skip-same-version -i {{ riak_package }}
-  register: dpkg_result
-  changed_when: dpkg_result.stdout.startswith('Selecting')
-  when: riak_custom_package != False
-
-- name: set the riak ulimit
+- name: Set the riak ulimit for Debian
   copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak
+  tags: Debian

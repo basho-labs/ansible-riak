@@ -1,5 +1,0 @@
-# {{ ansible_managed }}
-
-{% for key, value in riak_config %}
-{{ key|replace("-", ".") }} = {{ value }}
-{% endfor %}

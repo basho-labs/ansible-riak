@@ -1,34 +1,14 @@
 ---
-- name: Add the OS specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+- name: Install libselinux-python
+  yum: name=libselinux-python
 
-- name: Add Ubuntu specific variables
-  include_vars: "Ubuntu.yml"
-  when: ansible_distribution == "Ubuntu"
+- name: Execute RedHat OS family specific install
+  include: RedHat.yml
+  when: ansible_os_family == 'RedHat'
 
-- name: copy custom riak package
-  copy: src={{ riak_custom_package }} dest=/tmp
-  when: riak_custom_package != False and riak_custom_package.find('http') == -1
-
-- name: copy custom riak package from remote
-  action: get_url url={{ riak_custom_package }} dest=/tmp/ validate_certs=no force=yes
-  when: riak_custom_package != False and riak_custom_package.find('http') != -1
-
-- name: set riak packagename
-  set_fact: riak_package=/tmp/{{ riak_custom_package|basename }} state=present
-  when: riak_custom_package != False
-
-- name: set riak_ee fact
-  set_fact: riak_ee=yes
-  when: riak_package.find('ee') != -1
-
-# CentOS specific package installations
-- include: RedHat.yml
-  when: ansible_os_family  == "RedHat"
-
-# Debian specific package installations
-- include: Debian.yml
-  when: ansible_os_family  == "Debian"
+- name: Execute Debian OS family specific install
+  include: Debian.yml
+  when: ansible_os_family == 'Debian'
 
 - name: update pam configuration
   copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf owner=root group=root mode=0644
@@ -52,9 +32,9 @@
     - update sysctl
 
 - name: copying custom beams
-  copy: src={{ item }} dest="{{ riak_patch_dir }}/"
+  copy: "src={{ item }} dest={{ riak_patch_dir }}/"
   with_fileglob:
-  - "{{riak_custom_beams_dir}}/*.beam"
+    - "{{riak_custom_beams_dir}}/*.beam"
   when: riak_custom_beams_dir is defined
   notify:
     - restart riak
@@ -62,17 +42,31 @@
     - wait for kv
 
 - name: preserve distribution copy of riak.conf
-  command: mv /etc/riak/riak.conf /etc/riak/riak.conf.dist
+  command: cp /etc/riak/riak.conf /etc/riak/riak.conf.dist
+  tags: configfiles
 
-- name: configure riak.conf
-  template: src=etc_riak_riak.conf.j2 dest=/etc/riak/riak.conf
+- name: Set listening ip/port within riak.conf
+  lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key }} = .+$' line='{{ item.key }} = {{ item.value }}'"
+  tags: configfiles
+  with_items:
+    - { key: listener.http.internal, value: "{{ riak_http_bind_ip }}: {{ riak_http_bind_port }}" }
+    - { key: listener.protobuf.internal, value: "{{ riak_pb_bind_ip }}: {{ riak_pb_bind_port }}" }
+
+- name: Replace / add config settings to riak.conf
+  lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key }} = .+$' line='{{ item.key }} = {{ item.value }}'"
+  tags: configfiles
+  when: riak_conf is defined
+  with_dict: riak_conf
+
+- name: Tag riak.conf as ansible managed
+  lineinfile: "dest=/etc/riak/riak.conf regexp='^Ansible managed:.+$'  line='## Ansible Managed\n' insertbefore='BOF'"
   tags: configfiles
   notify:
     - restart riak
     - wait for http
     - wait for kv
 
-- name: start riak
+- name: Make certain Riak is set to start on boot and is currently running
   service: name=riak enabled=yes state=started
 
 - name: wait for port to become active

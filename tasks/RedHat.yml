@@ -1,3 +1,14 @@
 ---
-- name: install riak
+- name: Include RHEL vars
+  include_vars: RedHat.yml
+
+- name: Install Java
+  yum: name=java-1.7.0-openjdk state=present
+
+- name: Install package cloud repo
+  shell: "curl https://packagecloud.io/install/repositories/basho/riak/script.rpm | sudo bash"
+  tags: RedHat
+
+- name: Install Riak for RedHat
   yum: name={{ riak_package }} state=present
+  tags: RedHat

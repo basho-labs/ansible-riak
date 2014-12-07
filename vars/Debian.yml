@@ -1,4 +1,2 @@
+---
 riak_usr_lib: /usr/lib
-riak_custom_package: false
-riak_package: riak={{ riak_version }}-{{ riak_package_release }}
-
