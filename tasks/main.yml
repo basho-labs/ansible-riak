@@ -1,7 +1,4 @@
 ---
-- name: Install libselinux-python
-  yum: name=libselinux-python
-
 - name: Execute RedHat OS family specific install
   include: RedHat.yml
   when: ansible_os_family == 'RedHat'
