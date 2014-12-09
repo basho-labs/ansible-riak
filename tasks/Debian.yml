@@ -3,12 +3,19 @@
   include_vars: Debian.yml
   tags: Debian
 
+- name: Install Pre-requisites
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  tags: Debian
+  with_items:
+  - curl
+
 - name: Install package cloud repo
   shell: "curl https://packagecloud.io/install/repositories/basho/riak/script.deb | sudo bash"
   tags: Debian
 
 - name: Install Riak for Debian
-  apt: name={{ riak_package }} state=present
+  apt: name={{ riak_package }} state=present  update_cache=yes cache_valid_time=3600
+ 
   tags: Debian
 
 - name: Set the riak ulimit for Debian

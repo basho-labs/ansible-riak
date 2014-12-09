@@ -25,7 +25,6 @@
 - name: configure sysctl
   template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
   notify:
-    - check proc writeable
     - update sysctl
 
 - name: copying custom beams
@@ -50,7 +49,7 @@
     - { key: listener.protobuf.internal, value: "{{ riak_pb_bind_ip }}: {{ riak_pb_bind_port }}" }
 
 - name: Replace / add config settings to riak.conf
-  lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key }} = .+$' line='{{ item.key }} = {{ item.value }}'"
+  lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key|replace('-','.')  }} = .+$' line='{{ item.key|replace('-','.') }} = {{ item.value }}'"
   tags: configfiles
   when: riak_conf is defined
   with_dict: riak_conf
