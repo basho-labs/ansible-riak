@@ -41,12 +41,13 @@
   command: cp /etc/riak/riak.conf /etc/riak/riak.conf.dist
   tags: configfiles
 
-- name: Set listening ip/port within riak.conf
+- name: Set listening ip/port and nodename within riak.conf
   lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key }} = .+$' line='{{ item.key }} = {{ item.value }}'"
   tags: configfiles
   with_items:
-    - { key: listener.http.internal, value: "{{ riak_http_bind_ip }}: {{ riak_http_bind_port }}" }
-    - { key: listener.protobuf.internal, value: "{{ riak_pb_bind_ip }}: {{ riak_pb_bind_port }}" }
+    - { key: listener.http.internal, value: "{{ riak_http_conf }}" }
+    - { key: listener.protobuf.internal, value: "{{ riak_pb_conf }}" }
+    - { key: nodename, value: "{{ riak_node_name }}" }
 
 - name: Replace / add config settings to riak.conf
   lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key|replace('-','.')  }} = .+$' line='{{ item.key|replace('-','.') }} = {{ item.value }}'"
@@ -66,7 +67,7 @@
   service: name=riak enabled=yes state=started
 
 - name: wait for port to become active
-  wait_for: port={{ riak_http_port }}
+  wait_for: "port={{ riak_http_port }}"
 
 - name: wait for riak_kv service to start
   riak: wait_for_service=kv

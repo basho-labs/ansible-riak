@@ -1,7 +1,5 @@
 ---
 riak_version:       2.0.2
-riak_enterprise:    false
-riak_usr_lib:       /usr/lib
 
 # override this with the location of the package
 # options:
@@ -10,13 +8,22 @@ riak_usr_lib:       /usr/lib
 #   - package name
 riak_package:       riak
 
-riak_iface:                 eth0
-riak_ip_addr:               "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"
-riak_pb_bind_ip:            127.0.0.1
-riak_pb_port:               8087
-riak_http_bind_ip:          127.0.0.1
-riak_http_port:             8098
-riak_net_speed:             1Gb
+riak_enterprise:    false
+riak_usr_lib:       /usr/lib
+riak_iface:         eth0
+
+riak_ip_addr:       "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"
+
+riak_pb_bind_ip:    127.0.0.1
+riak_pb_port:       8087
+riak_pb_conf:       "{{ riak_pb_bind_ip }}:{{ riak_pb_port }}"
+
+riak_http_bind_ip:  127.0.0.1
+riak_http_port:     8098
+riak_http_conf:     "{{ riak_http_bind_ip }}:{{ riak_http_port }}"
+
+riak_net_speed:     1Gb
+riak_node_name:     "riak@{{ riak_ip_addr }}"
 
 # disc tuning
 riak_filesystem:    ext4
@@ -39,13 +46,11 @@ riak_scheduler:     noop
 # e.g. 'search.solr.start_timeout' becomes 'search-solr-start_timeout'. Below is a sample definition for the
 # riak_conf var.
 #
-riak_conf:
-    listener-http-internal:             "{{ riak_http_bind_ip }}:{{ riak_http_port }}"
-    listener-protobuf-internal:         "{{ riak_pb_bind_ip }}:{{ riak_pb_port }}"
-    log-crash-file:                     "$(platform_log_dir)/crash.log"
-    log-error-file:                     "$(platform_log_dir)/error.log"
-    nodename:                           "riak@{{ riak_ip_addr }}"
-    storage_backend:                    "bitcask"
-    strong_consistency:                 "off"
+#riak_conf:
+#    log-crash-file:                     "$(platform_log_dir)/crash.log"
+#    log-error-file:                     "$(platform_log_dir)/error.log"
+#    nodename:                           "riak@{{ riak_ip_addr }}"
+#    storage_backend:                    "bitcask"
+#    strong_consistency:                 "off"
 #
 # @see http://docs.basho.com/riak/latest/ops/advanced/configs/configuration-files/
