@@ -71,7 +71,7 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 | riak_physical_disks| [sda]     | A list of the physical disks that make up Riak's data volume(s).  Used in tuning some disk parameters. |
 | riak_ring_size | 64            | the number of partitions in your Riak ring. |
 | riak_scheduler | noop          | the disk scheduler to use for your Riak-related disks. |
-| riak_search    | "false"       | enable/disable for configuring Riak search. |
+| riak_search (solr) | "false"       | enable/disable for configuring Riak search. |
 | riak_tune_disks | no | enables  disk tunings |
 | riak_usr_lib   |OS specific    | the path to Riak libraries.
 | riak_version   | 1.4.10         | version of Riak you want to install..
@@ -95,8 +95,7 @@ First we set the role to the riak_cluster group as defined in the inventory.  Th
 Dependencies
 ------------
 
-Depends on the basho.riak-common role.
-
+Depends on the [basho.riak-common](https://github.com/basho-labs/ansible-riak-common) role.
 
 
 License
@@ -107,6 +106,5 @@ Apache
 Maintainer Information
 ------------------
 
-- James Martin 
 - Bryan Hunt (<bhunt@basho.com>)
-- Hector Castro
+- and You! [Read up](https://github.com/basho-labs/the-riak-community/blob/master/config-mgmt-strategy.md) and get involved
