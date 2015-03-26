@@ -6,7 +6,7 @@ VAGRANTFILE_API_VERSION = "2"
 # Ensure basho.riak-common dependency is in place
 if [ "up", "provision" ].include?(ARGV.first) && File.directory?("roles") &&
   !(File.directory?("roles/basho.riak-common") || File.symlink?("roles/basho.riak-common"))
-  system("ansible-galaxy install -r roles.txt -p roles")
+  system("ansible-galaxy install -r roles.txt -p roles --ignore-errors")
 end
 
 # Grab local IP address for the proxy
@@ -36,6 +36,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
 
   # Wire up the proxy
   if Vagrant.has_plugin?("vagrant-proxyconf")
+    begin
+      TCPSocket.open('localhost', 8123) do |s|
+        s.select()
+      end
+    rescue Exception=> e
+       abort("proxy enabled, and expected by VM, but not running")
+    end
     cluster.proxy.http     = "http://#{local_ip}:8123/"
     cluster.proxy.https    = "http://#{local_ip}:8123/"
     cluster.proxy.no_proxy = "localhost,127.0.0.1"
@@ -48,11 +55,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |cluster|
       machine.vm.hostname = "riak-0#{index}"
       machine.vm.network "private_network", ip: "10.42.0.#{last_octet}"
 
+      if ENV["ANSIBLE_RIAK_CS_FORWARD_PORTS"]
+          puts machine.vm.hostname + ": Forwarding ports to local host" 
+          machine.vm.network "forwarded_port", guest: 8087, host: (10000 * index) + 8087
+          machine.vm.network "forwarded_port", guest: 8098, host: (10000 * index) + 8098
+      end
+
       if (index) == 3
         machine.vm.provision "ansible" do |ansible|
           ansible.playbook = "./setup_riak.yml"
           ansible.inventory_path = "./hosts"
-          ansible.raw_arguments = [ "-T 30" ]
+          ansible.raw_arguments = [ "--timeout=60" ]
 
           ansible.extra_vars = {
             riak_iface: "eth1",
