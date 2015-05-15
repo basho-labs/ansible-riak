@@ -5,7 +5,7 @@ riak_custom_package: no
 riak_filesystem: ext4
 riak_handoff_port: 8099
 riak_http_port: 8098
-riak_iface: eth0
+riak_iface: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['interface'] }}"
 riak_ip_addr: "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"
 riak_node_name: "riak@{{ riak_ip_addr }}"
 riak_pb_bind_ip: 0.0.0.0
