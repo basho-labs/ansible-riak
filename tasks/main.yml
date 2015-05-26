@@ -1,4 +1,7 @@
 ---
+- name: Make certain Riak is stopped
+  service: name=riak state=stopped
+
 - name: Execute RedHat OS family specific install
   include: RedHat.yml
   when: ansible_os_family == 'RedHat'
@@ -24,22 +27,21 @@
 
 - name: configure sysctl
   template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
-  notify:
-    - update sysctl
 
 - name: copying custom beams
   copy: "src={{ item }} dest={{ riak_patch_dir }}/"
   with_fileglob:
     - "{{riak_custom_beams_dir}}/*.beam"
   when: riak_custom_beams_dir is defined
-  notify:
-    - restart riak
-    - wait for http
-    - wait for kv
 
-- name: preserve distribution copy of riak.conf
-  command: cp /etc/riak/riak.conf /etc/riak/riak.conf.dist
+- name: Check if this is first pass
+  stat: path=/etc/riak/riak.conf.dist
+  register: dist
+
+- name: preserve distribution copy of riak.conf if not already done
+  command: "cp -i /etc/riak/riak.conf /etc/riak/riak.conf.dist"
   tags: configfiles
+  when: not dist.stat.exists
 
 - name: Set listening ip/port and nodename within riak.conf
   lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key }} = .+$' line='{{ item.key }} = {{ item.value }}'"
@@ -50,28 +52,20 @@
     - { key: nodename, value: "{{ riak_node_name }}" }
 
 - name: Replace / add config settings to riak.conf
-  lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key|replace('-','.')  }} = .+$' line='{{ item.key|replace('-','.') }} = {{ item.value }}'"
+  lineinfile: "dest=/etc/riak/riak.conf regexp='^#{0,1}{{ item.key|replace('-','.')  }} = .+$' line='{{ item.key|replace('-','.') }} = {{ item.value }}'"
   tags: configfiles
   when: riak_conf is defined
   with_dict: riak_conf
 
 - name: Tag riak.conf as ansible managed
-  lineinfile: "dest=/etc/riak/riak.conf regexp='^Ansible managed:.+$'  line='## Ansible Managed\n' insertbefore='BOF'"
+  lineinfile: "dest=/etc/riak/riak.conf regexp='^## Ansible Managed.+$'  line='## Ansible Managed\n' insertbefore='BOF'"
   tags: configfiles
-  notify:
-    - restart riak
-    - wait for http
-    - wait for kv
 
-- name: Make certain Riak is set to start on boot and is currently running
+- name: Make certain Riak is set to start on boot
   service: name=riak enabled=yes state=started
 
-- name: wait for port to become active
-  wait_for: "port={{ riak_http_port }}"
+- name: Bucket operations
+  include: buckets.yml
 
-- name: wait for riak_kv service to start
-  riak: wait_for_service=kv
-
-- name: ping riak
-  riak: command=ping
-  register: info
+- name: Security operations
+  include: security.yml

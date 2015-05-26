@@ -1,6 +1,4 @@
 ---
-riak_version:       2.0.2
-
 # override this with the location of the package
 # options:
 #   - URL to package
@@ -10,9 +8,10 @@ riak_package:       riak
 
 riak_enterprise:    false
 riak_usr_lib:       /usr/lib
-riak_iface:         eth0
 
-riak_ip_addr:       "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"
+riak_admin:   '/usr/sbin/riak-admin'
+
+riak_node_name:     'riak@127.0.0.1'
 
 riak_pb_bind_ip:    127.0.0.1
 riak_pb_port:       8087
@@ -23,7 +22,6 @@ riak_http_port:     8098
 riak_http_conf:     "{{ riak_http_bind_ip }}:{{ riak_http_port }}"
 
 riak_net_speed:     1Gb
-riak_node_name:     "riak@{{ riak_ip_addr }}"
 
 # disc tuning
 riak_filesystem:    ext4
@@ -38,7 +36,8 @@ riak_tune_disks:    false
 riak_tune_os:       false
 riak_scheduler:     noop
 
-# riak.conf settings
+
+# Configure riak.conf
 #
 # The riak_conf is a dictionary structured variable for storing settings that you wish to override or add to the
 # riak.conf file. If riak_conf is not defined, then the riak.conf that is distributed with Riak will be untouched.
@@ -54,3 +53,33 @@ riak_scheduler:     noop
 #    strong_consistency:                 "off"
 #
 # @see http://docs.basho.com/riak/latest/ops/advanced/configs/configuration-files/
+
+
+# Create bucket types
+#
+#riak_bucket_types:
+#  - { name: counters, props: '{"props":{"datatype":"counter"}}' }
+#  - { name: maps, props: '{"props":{"datatype":"map"}}' }
+#  - { name: sets, props: '{"props":{"datatype":"set"}}' }
+
+
+# Create users
+#
+#riak_users:
+#  - {user: 'user1', password: '', cert: ''}
+#  - {user: 'user2', password: 'somepassword_that_is_more_complex_than_this', cert: ''}
+
+
+# Create security sources
+#riak_sources:
+#  - {user: 'user1', type: 'certificate', cidr: '0.0.0.0/0'}
+#  - {user: 'user2', type: 'password', cidr: '0.0.0.0/0'}
+#  - {user: 'user3', type: 'trust', cidr: '0.0.0.0/0'}
+#  - {user: 'user4', type: 'pam', cidr: '0.0.0.0/0'}
+
+
+# Create permission grants
+#
+#riak_grants:
+#  - {subject: 'user', bucket_type: 'certificate', bucket: '', permissions: ''}
+#  - {subject: 'group', bucket_type: 'password', bucket: '', permissions: ''}

@@ -1,0 +1,9 @@
+---
+- name: Create bucket types
+  command: '{{ riak_admin }} bucket-type create {{ item.name }} ''{{ item.props }}'''
+  with_items: riak_bucket_types
+  ignore_errors: true
+
+- name: Activate bucket types
+  command: '{{ riak_admin }} bucket-type activate {{ item.name }}'
+  with_items: riak_bucket_types

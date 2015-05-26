@@ -14,8 +14,8 @@ galaxy_info:
   - name: EL
     versions:
   #  - all
-  #  - 5
     - 6
+    - 7
   #- name: GenericUNIX
   #  versions:
   #  - all
@@ -93,7 +93,7 @@ galaxy_info:
   #- cloud:ec2
   #- cloud:gce
   #- cloud:rax
-  #- database
+  - database
   - database:nosql
   #- database:sql
   #- development
