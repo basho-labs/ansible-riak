@@ -3,6 +3,10 @@ ansible-riak
 
 This role will setup Riak on a node. It will ***not*** build a cluster.  In order to build a cluster, use one of the example playbooks defined below.
 
+## **NOTE!** Huge update coming on dev-2.x branches
+
+Don't be surprised if this branch isn't working. Master will stay safe. 
+
 ## Description
 
 [Riak](http://basho.com/riak/) is an open source, distributed database that focuses on high availability, horizontal scalability, and *predictable* latency.
