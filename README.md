@@ -1,7 +1,14 @@
-riak
+riak-ansible
 ========
 
 This role will setup Riak on a node. It will ***not*** build a cluster.  In order to build a cluster, use one of the example playbooks defined below.
+
+## **NOTE!** Huge update coming on dev-2.x branches
+
+Master deploys as explained below. It's really behind, which is why we're cleaning up our branching strategy. Stay tuned, [read up](https://github.com/basho-labs/the-riak-community/blob/master/config-mgmt-strategy.md) and get involved!
+
+You can [read the full guidelines](http://docs.basho.com/riak/latest/community/bugs/) for bug reporting and code contributions on the Riak Docs. And **thank you!** Your contribution is incredible important to us.
+
 
 Requirements
 ------------
