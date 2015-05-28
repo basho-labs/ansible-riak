@@ -10,7 +10,9 @@
   - curl
 
 - name: Install package cloud repo
-  shell: "curl https://packagecloud.io/install/repositories/basho/riak/script.deb | sudo bash"
+  shell: "curl -L https://packagecloud.io/install/repositories/basho/riak/script.deb.sh | sudo bash"
+  args:
+    creates: /etc/apt/sources.list.d/basho_riak.list
   tags: Debian
 
 - name: Install Riak for Debian
