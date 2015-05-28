@@ -58,7 +58,7 @@
   with_dict: riak_conf
 
 - name: Tag riak.conf as ansible managed
-  lineinfile: "dest=/etc/riak/riak.conf regexp='^## Ansible Managed.+$'  line='## Ansible Managed\n' insertbefore='BOF'"
+  lineinfile: dest=/etc/riak/riak.conf regexp='^## Ansible Managed.*$'  line='## Ansible Managed' insertbefore='BOF'
   tags: configfiles
 
 - name: Make certain Riak is set to start on boot
