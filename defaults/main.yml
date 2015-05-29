@@ -11,13 +11,13 @@ riak_usr_lib:       /usr/lib
 
 riak_admin:   '/usr/sbin/riak-admin'
 
-riak_node_name:     'riak@127.0.0.1'
+riak_node_name:     'riak@{{ ansible_fqdn }}'
 
-riak_pb_bind_ip:    127.0.0.1
+riak_pb_bind_ip:    0.0.0.0
 riak_pb_port:       8087
 riak_pb_conf:       "{{ riak_pb_bind_ip }}:{{ riak_pb_port }}"
 
-riak_http_bind_ip:  127.0.0.1
+riak_http_bind_ip:  0.0.0.0
 riak_http_port:     8098
 riak_http_conf:     "{{ riak_http_bind_ip }}:{{ riak_http_port }}"
 

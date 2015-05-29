@@ -60,11 +60,14 @@
   with_dict: riak_conf
 
 - name: Tag riak.conf as ansible managed
-  lineinfile: "dest=/etc/riak/riak.conf regexp='^## Ansible Managed.+$'  line='## Ansible Managed\n' insertbefore='BOF'"
+  lineinfile: dest=/etc/riak/riak.conf regexp='^## Ansible Managed.*$'  line='## Ansible Managed' insertbefore='BOF'
   tags: configfiles
 
-- name: Make certain Riak is set to start on boot
+- name: Make certain Riak is started and set to start on boot
   service: name=riak enabled=yes state=started
+
+- name: Wait for Riak to start up before continuing
+  wait_for: delay=5 timeout=30 host={{ inventory_hostname }} port={{ riak_pb_port }} state=started
 
 - name: Bucket operations
   include: buckets.yml
