@@ -1,6 +1,6 @@
 ---
-- name: source rclocal
-  command: /bin/bash /etc/rc.local
+- name: run riak_disk_tune
+  command: /bin/bash /usr/local/bin/riak_disk_tune.sh
 
 - name: restart riak
   service: name=riak state=restarted
