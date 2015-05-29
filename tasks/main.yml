@@ -1,6 +1,8 @@
 ---
 - name: Make certain Riak is stopped
   service: name=riak state=stopped
+  ignore_errors: yes
+  # Will always fail if Riak has never been installed before
 
 - name: Execute RedHat OS family specific install
   include: RedHat.yml
