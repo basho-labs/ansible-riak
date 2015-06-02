@@ -13,13 +13,20 @@ riak_admin:   '/usr/sbin/riak-admin'
 
 riak_node_name:     'riak@{{ ansible_fqdn }}'
 
+riak_ring_size:     64
+
+riak_backend:   bitcask
+
 riak_pb_bind_ip:    0.0.0.0
 riak_pb_port:       8087
-riak_pb_conf:       "{{ riak_pb_bind_ip }}:{{ riak_pb_port }}"
 
 riak_http_bind_ip:  0.0.0.0
 riak_http_port:     8098
-riak_http_conf:     "{{ riak_http_bind_ip }}:{{ riak_http_port }}"
+
+riak_control:   "off"
+riak_search:   "off"
+
+riak_leveldb_max_mem_percent:   70
 
 riak_net_speed:     1Gb
 
@@ -35,24 +42,6 @@ riak_physical_disks:
 riak_tune_disks:    false
 riak_tune_os:       false
 riak_scheduler:     noop
-
-
-# Configure riak.conf
-#
-# The riak_conf is a dictionary structured variable for storing settings that you wish to override or add to the
-# riak.conf file. If riak_conf is not defined, then the riak.conf that is distributed with Riak will be untouched.
-# To avoid conflicts with Jinja's syntax, replace periods with dashes within config keys,
-# e.g. 'search.solr.start_timeout' becomes 'search-solr-start_timeout'. Below is a sample definition for the
-# riak_conf var.
-#
-#riak_conf:
-#    log-crash-file:                     "$(platform_log_dir)/crash.log"
-#    log-error-file:                     "$(platform_log_dir)/error.log"
-#    nodename:                           "riak@{{ riak_ip_addr }}"
-#    storage_backend:                    "bitcask"
-#    strong_consistency:                 "off"
-#
-# @see http://docs.basho.com/riak/latest/ops/advanced/configs/configuration-files/
 
 
 # Create bucket types

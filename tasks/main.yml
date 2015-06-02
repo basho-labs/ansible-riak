@@ -1,8 +1,4 @@
 ---
-- name: Make certain Riak is stopped
-  service: name=riak state=stopped
-  ignore_errors: yes
-  # Will always fail if Riak has never been installed before
 
 - name: Execute RedHat OS family specific install
   include: RedHat.yml
@@ -45,23 +41,9 @@
   tags: configfiles
   when: not dist.stat.exists
 
-- name: Set listening ip/port and nodename within riak.conf
-  lineinfile: "dest=/etc/riak/riak.conf regexp='^{{ item.key }} = .+$' line='{{ item.key }} = {{ item.value }}'"
-  tags: configfiles
-  with_items:
-    - { key: listener.http.internal, value: "{{ riak_http_conf }}" }
-    - { key: listener.protobuf.internal, value: "{{ riak_pb_conf }}" }
-    - { key: nodename, value: "{{ riak_node_name }}" }
-
-- name: Replace / add config settings to riak.conf
-  lineinfile: "dest=/etc/riak/riak.conf regexp='^#{0,1}{{ item.key|replace('-','.')  }} = .+$' line='{{ item.key|replace('-','.') }} = {{ item.value }}'"
-  tags: configfiles
-  when: riak_conf is defined
-  with_dict: riak_conf
-
-- name: Tag riak.conf as ansible managed
-  lineinfile: dest=/etc/riak/riak.conf regexp='^## Ansible Managed.*$'  line='## Ansible Managed' insertbefore='BOF'
-  tags: configfiles
+- name: install riak.conf with templated configuration
+  template: src=riak.conf.j2 dest=/etc/riak/riak.conf owner=root group=root mode=0444
+  notify: restart riak
 
 - name: Make certain Riak is started and set to start on boot
   service: name=riak enabled=yes state=started
