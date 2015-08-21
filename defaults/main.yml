@@ -11,6 +11,8 @@ riak_usr_lib:       /usr/lib
 
 riak_admin:   '/usr/sbin/riak-admin'
 
+riak_conf_template: riak.conf.j2
+
 riak_node_name:     'riak@{{ ansible_fqdn }}'
 
 riak_ring_size:     64

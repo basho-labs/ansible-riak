@@ -42,7 +42,7 @@
   when: not dist.stat.exists
 
 - name: install riak.conf with templated configuration
-  template: src=riak.conf.j2 dest=/etc/riak/riak.conf owner=root group=root mode=0444
+  template: src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444
   notify: restart riak
 
 - name: Make certain Riak is started and set to start on boot
