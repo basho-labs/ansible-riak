@@ -15,9 +15,13 @@
   mount: name={{ riak_mountpoint }} src={{ riak_partition }} opts="{{riak_mount_options}}" fstype="{{riak_filesystem}}" state=mounted
   when: riak_tune_disks
 
-- name: confgure rc.local
-  template: src=etc_rc.local.j2 dest=/etc/rc.local owner=root group=root mode=0755
-  notify: source rclocal
+- name: create script with disk tuning commands
+  template: src=riak_disk_tune.sh.j2 dest=/usr/local/bin/riak_disk_tune.sh owner=root group=root mode=0755
+  notify: run riak_disk_tune
+  when: riak_tune_disks
+
+- name: add line to rc.local to call riak_disk_tune on boot
+  lineinfile: dest=/etc/rc.local line="if [ -x /usr/local/bin/riak_disk_tune.sh ]; then /usr/local/bin/riak_disk_tune.sh; fi" insertbefore="^exit 0"
   when: riak_tune_disks
 
 - name: create sysctl.d
