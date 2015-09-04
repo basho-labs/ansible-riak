@@ -1,7 +1,19 @@
-riak
+ansible-riak
 ========
 
 This role will setup Riak on a node. It will ***not*** build a cluster.  In order to build a cluster, use one of the example playbooks defined below.
+
+## **NOTE!** Huge update coming on dev-2.x branches
+
+Don't be surprised if this branch isn't working. Master will stay safe. 
+
+## Description
+
+[Riak](http://basho.com/riak/) is an open source, distributed database that focuses on high availability, horizontal scalability, and *predictable* latency.
+
+This repository is **community supported**. We both appreciate and need your contribution to keep it stable. For more on how to contribute, [take a look at the contribution process](#contribution).
+
+Thank you for being part of the community! We love you for it.
 
 Requirements
 ------------
@@ -71,7 +83,7 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 | riak_physical_disks| [sda]     | A list of the physical disks that make up Riak's data volume(s).  Used in tuning some disk parameters. |
 | riak_ring_size | 64            | the number of partitions in your Riak ring. |
 | riak_scheduler | noop          | the disk scheduler to use for your Riak-related disks. |
-| riak_search    | "false"       | enable/disable for configuring Riak search. |
+| riak_search (solr) | "false"       | enable/disable for configuring Riak search. |
 | riak_tune_disks | no | enables  disk tunings |
 | riak_usr_lib   |OS specific    | the path to Riak libraries.
 
@@ -94,8 +106,7 @@ First we set the role to the riak_cluster group as defined in the inventory.  Th
 Dependencies
 ------------
 
-Depends on the basho.riak-common role.
-
+Depends on the [basho.riak-common](https://github.com/basho-labs/ansible-riak-common) role.
 
 
 License
@@ -103,9 +114,21 @@ License
 
 Apache
 
-Maintainer Information
-------------------
+##Contributions 
 
-- James Martin 
-- Bryan Hunt (<bhunt@basho.com>)
-- Hector Castro
+Basho Labs repos survive because of community contribution. Here’s how to get started.
+
+* Fork the appropriate sub-projects that are affected by your change
+* Create a topic branch for your change and checkout that branch
+   `git checkout -b some-topic-branch`
+* Make your changes and run the test suite if one is provided (see below)
+* Commit your changes and push them to your fork
+* Open a pull request for the appropriate project
+* Contributors will review your pull request, suggest changes, and merge it when it’s ready and/or offer feedback
+* To report a bug or issue, please open a new issue against this repository
+
+### Maintainers
+* Bryan Hunt ([GitHub](https://github.com/binarytemple), <bhunt@basho.com>)
+* and You! [Read up](https://github.com/basho-labs/the-riak-community/blob/master/config-mgmt-strategy.md) and get involved
+
+You can [read the full guidelines](http://docs.basho.com/riak/latest/community/bugs/) for bug reporting and code contributions on the Riak Docs. And **thank you!** Your contribution is incredible important to us.

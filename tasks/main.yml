@@ -1,5 +1,4 @@
 ---
-
 - name: Execute RedHat OS family specific install
   include: RedHat.yml
   when: ansible_os_family == 'RedHat'
@@ -21,7 +20,7 @@
   when: riak_tune_disks
 
 - name: add line to rc.local to call riak_disk_tune on boot
-  lineinfile: dest=/etc/rc.local line="if [ -x /usr/local/bin/riak_disk_tune.sh ]; then /usr/local/bin/riak_disk_tune.sh; fi" insertbefore="^exit 0"
+  lineinfile: 'dest=/etc/rc.local line="if [ -x /usr/local/bin/riak_disk_tune.sh ]; then /usr/local/bin/riak_disk_tune.sh; fi" insertbefore="^exit 0"'
   when: riak_tune_disks
 
 - name: create sysctl.d
