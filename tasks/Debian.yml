@@ -8,12 +8,25 @@
   tags: Debian
   with_items:
   - curl
+  - apt-transport-https
+  - openjdk-7-jre
 
-- name: Install package cloud repo
-  shell: "curl -L https://packagecloud.io/install/repositories/basho/riak/script.deb.sh | sudo bash"
-  args:
-    creates: /etc/apt/sources.list.d/basho_riak.list
+- name: Fetch ansible ansible_version
+  command: ansible --version
+  register: ans_ver
+
+- name: Add Package Cloud repository key without validation
+  apt_key: url=https://packagecloud.io/gpg.key state=present validate_certs=no
   tags: Debian
+  when: ans_ver.stdout.find(' 1.5.') > 0
+
+- name: Add Package Cloud repository key with validation
+  apt_key: url=https://packagecloud.io/gpg.key state=present
+  tags: Debian
+  when: ans_ver.stdout.find(' 1.5.') < 0
+
+- name: Add Basho Riak repository (hosted at Package Cloud)
+  template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
 
 - name: Install Riak for Debian
   apt: name={{ riak_package }} state=present  update_cache=yes cache_valid_time=3600
