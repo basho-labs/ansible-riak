@@ -15,7 +15,7 @@
   register: dist
 
 - name: Install package cloud repo if Riak is not already installed
-  shell: "curl -L https://packagecloud.io/install/repositories/basho/riak/script.rpm | sudo bash"
+  script: packagecloud_rpm.sh
   tags: RedHat
   when: not dist.stat.exists
 
