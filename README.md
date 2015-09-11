@@ -1,19 +1,12 @@
-ansible-riak
-========
+riak-ansible
 
 This role will setup Riak on a node. It will ***not*** build a cluster.  In order to build a cluster, use one of the example playbooks defined below.
 
 ## **NOTE!** Huge update coming on dev-2.x branches
 
-Don't be surprised if this branch isn't working. Master will stay safe. 
+Master deploys as explained below. It's really behind, which is why we're cleaning up our branching strategy. Stay tuned, [read up](https://github.com/basho-labs/the-riak-community/blob/master/config-mgmt-strategy.md) and get involved!
 
-## Description
-
-[Riak](http://basho.com/riak/) is an open source, distributed database that focuses on high availability, horizontal scalability, and *predictable* latency.
-
-This repository is **community supported**. We both appreciate and need your contribution to keep it stable. For more on how to contribute, [take a look at the contribution process](#contribution).
-
-Thank you for being part of the community! We love you for it.
+You can [read the full guidelines](http://docs.basho.com/riak/latest/community/bugs/) for bug reporting and code contributions on the Riak Docs. And **thank you!** Your contribution is incredible important to us.
 
 Requirements
 ------------
@@ -37,17 +30,17 @@ If you have trouble seeing the tables below, please [read the documentation on G
 | riak_physical_disks| [sda]     | A list of the physical disks that make up Riak's data volume|
 
 
-For example, if you installed Riak onto a system with a single root partition, then riak_mountpoint would be "/".  If you had a dedicated volume for riak data, riak_mountpoint would be "/path/to/that/mounted/volume."  
+For example, if you installed Riak onto a system with a single root partition, then riak_mountpoint would be "/".  If you had a dedicated volume for riak data, riak_mountpoint would be "/path/to/that/mounted/volume."
 
-riak_partition: is the device that the riak_mountpoint is/will be mounted to.  You can gather that by running: 
+riak_partition: is the device that the riak_mountpoint is/will be mounted to.  You can gather that by running:
 
 	df /var/lib/riak
 
- 
+
  riak_physical_disks is a list of physical disks that make up the riak_partition.  It could be one, or could be many depending if you are using, RAID, LVM, etc.
- 
+
  If you wish to avoid any of the tuning, just leave riak_tune_disks to its default value of no.
- 
+
 
 
 ### All of the Variables
@@ -65,7 +58,7 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 | riak_custom_package| no     | specify a path on the Ansible control, or HTTP URL, to a custom Riak package.|
 | riak_filesystem | ext4         | filesystem that's used on Riak's data volume |
 | riak_handoff_port | 8099       | handoff port                       |
-| riak_handoff_wait | 600       | The number of seconds to wait until hand offs are finished |   
+| riak_handoff_wait | 600       | The number of seconds to wait until hand offs are finished |
 | riak_http_bind_ip | 0.0.0.0          | The IP address used to listen for Riak HTTP requests. |
 | riak_http_port | 8098          | port that Riak's http interface will listen |
 | riak_iface     | eth0          | interface that Riak will use |
@@ -101,7 +94,7 @@ First we set the role to the riak_cluster group as defined in the inventory.  Th
 * the last node performs a cluster plan, and cluster commit
 
 
-	
+
 
 Dependencies
 ------------
@@ -114,7 +107,7 @@ License
 
 Apache
 
-##Contributions 
+##Contributions
 
 Basho Labs repos survive because of community contribution. Here’s how to get started.
 
