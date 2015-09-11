@@ -1,0 +1,12 @@
+---
+- name: Create users
+  command: '{{ riak_admin }} security add-user {{ item.user }} password={{ item.password }}'
+  with_items: riak_users
+
+- name: Create security sources
+  command: '{{ riak_admin }} security add-source {{ item.user }} {{ item.cidr }} {{ item.type }}'
+  with_items: riak_sources
+
+- name: Set security permissions
+  command: '{{ riak_admin }} security grant {{ item.permissions }} on {{ item.container }} to {{ item.subject }}'
+  with_items: riak_grants

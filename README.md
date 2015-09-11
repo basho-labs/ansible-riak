@@ -18,7 +18,7 @@ Thank you for being part of the community! We love you for it.
 Requirements
 ------------
 
-Tested with Riak 1.4.10 on CentOS 6 and Ubuntu Precise.
+Tested with PackageCloud install of Riak on CentOS 6 & 7 and Ubuntu Precise.
 
 Role Variables
 --------------
@@ -86,7 +86,6 @@ Variables listed with "OS Specific" and "Install specific" have values defined i
 | riak_search (solr) | "false"       | enable/disable for configuring Riak search. |
 | riak_tune_disks | no | enables  disk tunings |
 | riak_usr_lib   |OS specific    | the path to Riak libraries.
-| riak_version   | 1.4.10         | version of Riak you want to install..
 
 
 Playbooks

@@ -1,30 +1,76 @@
 ---
-riak_aae: "on"
-riak_backend: bitcask
-riak_custom_package: no
-riak_filesystem: ext4
-riak_handoff_port: 8099
-riak_http_port: 8098
-riak_iface: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['interface'] }}"
-riak_ip_addr: "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"
-riak_node_name: "riak@{{ riak_ip_addr }}"
-riak_pb_bind_ip: 0.0.0.0
-riak_http_bind_ip: 0.0.0.0
-riak_cluster_mgr_bind_ip: 0.0.0.0
-riak_log_rotate: 5
-riak_mountpoint: /
-riak_mount_options: noatime,barrier=0,errors=remount-ro 
-riak_net_speed: 1Gb
-riak_node_name: "riak@{{ riak_ip_addr }}"
-riak_package_release: 1
-riak_partition: /dev/mapper/VolGroup-lv_root
-riak_pb_backlog: 256
-riak_pb_port: 8087
+# override this with the location of the package
+# options:
+#   - URL to package
+#   - file path to package (path must be accessible on machine running playbook)
+#   - package name
+riak_package:       riak
+
+riak_enterprise:    false
+riak_usr_lib:       /usr/lib
+
+riak_admin:   '/usr/sbin/riak-admin'
+
+riak_conf_template: riak.conf.j2
+
+riak_node_name:     'riak@{{ ansible_fqdn }}'
+
+riak_ring_size:     64
+
+riak_backend:   bitcask
+
+riak_pb_bind_ip:    0.0.0.0
+riak_pb_port:       8087
+
+riak_http_bind_ip:  0.0.0.0
+riak_http_port:     8098
+
+riak_control:   "off"
+riak_search:   "off"
+
+riak_leveldb_max_mem_percent:   70
+
+riak_net_speed:     1Gb
+
+# disc tuning
+riak_filesystem:    ext4
+riak_mountpoint:    /
+riak_mount_options: noatime,barrier=0,errors=remount-ro
+riak_partition:     /dev/mapper/VolGroup-lv_root
 riak_physical_disks:
   - sda
-riak_ring_size: 64
-riak_tune_disks: false
-riak_tune_os: false
-riak_scheduler: noop
-riak_search: "false"
-riak_version: 1.4.10
+
+# options
+riak_tune_disks:    false
+riak_tune_os:       false
+riak_scheduler:     noop
+
+
+# Create bucket types
+#
+#riak_bucket_types:
+#  - { name: counters, props: '{"props":{"datatype":"counter"}}' }
+#  - { name: maps, props: '{"props":{"datatype":"map"}}' }
+#  - { name: sets, props: '{"props":{"datatype":"set"}}' }
+
+
+# Create users
+#
+#riak_users:
+#  - {user: 'user1', password: '', cert: ''}
+#  - {user: 'user2', password: 'somepassword_that_is_more_complex_than_this', cert: ''}
+
+
+# Create security sources
+#riak_sources:
+#  - {user: 'user1', type: 'certificate', cidr: '0.0.0.0/0'}
+#  - {user: 'user2', type: 'password', cidr: '0.0.0.0/0'}
+#  - {user: 'user3', type: 'trust', cidr: '0.0.0.0/0'}
+#  - {user: 'user4', type: 'pam', cidr: '0.0.0.0/0'}
+
+
+# Create permission grants
+#
+#riak_grants:
+#  - {subject: 'user', bucket_type: 'certificate', bucket: '', permissions: ''}
+#  - {subject: 'group', bucket_type: 'password', bucket: '', permissions: ''}

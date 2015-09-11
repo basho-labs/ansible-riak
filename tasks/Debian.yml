@@ -1,14 +1,37 @@
 ---
-- name: install riak
-  apt: name={{ riak_package }} state=present
-  when: riak_custom_package == False
+- name: Include DEB vars
+  include_vars: Debian.yml
+  tags: Debian
 
-- name: install riak custom
-  command: dpkg --skip-same-version -i {{ riak_package }}
-  register: dpkg_result
-  changed_when: dpkg_result.stdout.startswith('Selecting')
-  when: riak_custom_package != False
+- name: Install Pre-requisites
+  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  tags: Debian
+  with_items:
+  - curl
+  - apt-transport-https
+  - openjdk-7-jre
 
-- name: set the riak ulimit
+- name: Fetch ansible ansible_version
+  command: ansible --version
+  register: ans_ver
+
+- name: Add Package Cloud repository key without validation
+  apt_key: url=https://packagecloud.io/gpg.key state=present validate_certs=no
+  tags: Debian
+  when: ans_ver.stdout.find(' 1.5.') > 0
+
+- name: Add Package Cloud repository key with validation
+  apt_key: url=https://packagecloud.io/gpg.key state=present
+  tags: Debian
+  when: ans_ver.stdout.find(' 1.5.') < 0
+
+- name: Add Basho Riak repository (hosted at Package Cloud)
+  template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
+
+- name: Install Riak for Debian
+  apt: name={{ riak_package }} state=present  update_cache=yes cache_valid_time=3600
+  tags: Debian
+
+- name: Set the riak ulimit for Debian
   copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak
-
+  tags: Debian

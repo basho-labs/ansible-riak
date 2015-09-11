@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: James Martin <jmartin@basho.com>
-  description: Installs and configures Riak, a distributed, highly available NoSQL database.
+  description: "Installs and configures Riak, a distributed, highly available NoSQL database."
   company: Basho
   license: Apache
   min_ansible_version: 1.4
@@ -14,8 +14,8 @@ galaxy_info:
   - name: EL
     versions:
   #  - all
-  #  - 5
     - 6
+    - 7
   #- name: GenericUNIX
   #  versions:
   #  - all
@@ -63,7 +63,9 @@ galaxy_info:
   #  - quantal
   #  - raring
   #  - saucy
-  #  - trusty
+    - trusty
+  #  - utopic
+  #  - vivid
   #- name: SLES
   #  versions:
   #  - all
@@ -77,13 +79,13 @@ galaxy_info:
   #  versions:
   #  - all
   #  - any
-  #- name: Debian
-  #  versions:
+  - name: Debian
+    versions:
   #  - all
   #  - etch
   #  - lenny
   #  - squeeze
-  #  - wheezy
+    - wheezy
   #
   # Below are all categories currently available. Just as with
   # the platforms above, uncomment those that apply to your role.
@@ -93,7 +95,7 @@ galaxy_info:
   #- cloud:ec2
   #- cloud:gce
   #- cloud:rax
-  #- database
+  - database
   - database:nosql
   #- database:sql
   #- development
@@ -103,7 +105,6 @@ galaxy_info:
   #- system
   #- web
 dependencies:
-- { role: basho.riak-common, tags: ['riak-common'] }
   # List your role dependencies here, one per line. Only
   # dependencies available via galaxy should be listed here.
   # Be sure to remove the '[]' above if you add dependencies

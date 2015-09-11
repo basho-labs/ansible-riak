@@ -1,3 +1,24 @@
 ---
-- name: install riak
-  yum: name={{ riak_package }} state=present
+- name: Include RHEL vars
+  include_vars: RedHat.yml
+  tags: RedHat
+
+- name: "Install Java & libselinux-python"
+  yum: "name={{ item }} state=present"
+  tags: RedHat
+  with_items:
+    - java-1.7.0-openjdk
+    - libselinux-python
+
+- name: Check if Riak is installed
+  stat: path=/etc/riak/riak.conf
+  register: dist
+
+- name: Install package cloud repo if Riak is not already installed
+  script: packagecloud_rpm.sh
+  tags: RedHat
+  when: not dist.stat.exists
+
+- name: Install Riak for RedHat
+  yum: "name={{ riak_package }} state=present"
+  tags: RedHat
