@@ -109,7 +109,7 @@ Apache
 
 ##Contributions
 
-Basho Labs repos survive because of community contribution. Here’s how to get started.
+Basho Labs repos survive because of community contribution. Here's how to get started.
 
 * Fork the appropriate sub-projects that are affected by your change
 * Create a topic branch for your change and checkout that branch
@@ -117,7 +117,7 @@ Basho Labs repos survive because of community contribution. Here’s how to get 
 * Make your changes and run the test suite if one is provided (see below)
 * Commit your changes and push them to your fork
 * Open a pull request for the appropriate project
-* Contributors will review your pull request, suggest changes, and merge it when it’s ready and/or offer feedback
+* Contributors will review your pull request, suggest changes, and merge it when it's ready and/or offer feedback
 * To report a bug or issue, please open a new issue against this repository
 
 ### Maintainers
