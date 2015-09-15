@@ -1,17 +1,12 @@
-riak-ansible
+**riak-kv Ansible role**
+
+Install using Ansible Galaxy
+--------------
+`$ ansible-galaxy install christophermancini.riak-kv`
 
 This role will setup Riak on a node. It will ***not*** build a cluster.  In order to build a cluster, use one of the example playbooks defined below.
 
-## **NOTE!** Huge update coming on dev-2.x branches
-
-Master deploys as explained below. It's really behind, which is why we're cleaning up our branching strategy. Stay tuned, [read up](https://github.com/basho-labs/the-riak-community/blob/master/config-mgmt-strategy.md) and get involved!
-
-You can [read the full guidelines](http://docs.basho.com/riak/latest/community/bugs/) for bug reporting and code contributions on the Riak Docs. And **thank you!** Your contribution is incredible important to us.
-
-Requirements
-------------
-
-Tested with PackageCloud install of Riak on CentOS 6 & 7 and Ubuntu Precise.
+Master deploys as explained below. You can [read the full guidelines](http://docs.basho.com/riak/latest/community/bugs/) for bug reporting and code contributions on the Riak Docs. And **thank you!** Your contribution is incredible important to us.
 
 Role Variables
 --------------
@@ -95,7 +90,6 @@ First we set the role to the riak_cluster group as defined in the inventory.  Th
 
 
 
-
 Dependencies
 ------------
 
@@ -122,6 +116,7 @@ Basho Labs repos survive because of community contribution. Here's how to get st
 
 ### Maintainers
 * Bryan Hunt ([GitHub](https://github.com/binarytemple), <bhunt@basho.com>)
+* Christopher Mancini ([GitHub](https://github.com/christophermancini), <cmancini@basho.com>)
 * and You! [Read up](https://github.com/basho-labs/the-riak-community/blob/master/config-mgmt-strategy.md) and get involved
 
 You can [read the full guidelines](http://docs.basho.com/riak/latest/community/bugs/) for bug reporting and code contributions on the Riak Docs. And **thank you!** Your contribution is incredible important to us.
