@@ -1,12 +1,12 @@
 # Ansible Role for Riak KV
 
-**Ansible Riak** is an Ansible role designed to install & configure Riak KV on a single node.
+**Ansible Riak** is an Ansible role designed to install & configure Riak KV. In combination with Ansible hosts, it can be used to configure a single node or an [entire cluster](#building-a-cluster).
 
 1. [Installation](#installation)
 1. [Documentation](#documentation)
 1. [Examples](#examples)
 1. [Contributing](#contributing)
-	* [An honest disclaimer](#an-honest-disclaimer)
+    * [An honest disclaimer](#an-honest-disclaimer)
 1. [Roadmap](#roadmap)
 1. [License and Authors](#license-and-authors)
 
@@ -56,8 +56,8 @@ There are two different ways to override the default template:
   roles:
     - { role: ansible-riak }
   vars:
-  	riak_pb_bind_ip: 10.29.7.192
-  	riak_pb_port:    10017
+    riak_pb_bind_ip: 10.29.7.192
+    riak_pb_port:    10017
 ```
 
 #### Overriding Default Variables via Role Dependency
@@ -66,7 +66,61 @@ Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant)
 
 #### Building a Cluster
 
+To build a cluster, you need to command your Riak node to [join the cluster](http://docs.basho.com/riak/latest/ops/running/cluster-admin/#join) by providing it the ring leader. With this role, there are two ways you can do this. Via the [command module](http://docs.ansible.com/ansible/command_module.html) and cli tool riak-admin or via the [Ansible Riak module](http://docs.ansible.com/ansible/riak_module.html).
 
+#### Command Module
+
+```yaml
+---
+- hosts: riak
+  sudo: true
+  roles:
+    - { role: ansible-riak }
+  vars:
+    ring_leader: riak1@127.0.0.1
+  tasks:
+    - name: Join the cluster
+      command: '{{ riak_admin }} join {{ ring_leader }}'
+
+    - name: Check Riak Ring
+      command: '{{ riak_admin }} cluster status'
+      register: riak_ring_status
+
+    - name: Plan the cluster
+      command: '{{ riak_admin }} plan'
+      when: riak_ring_status.stdout.find('joining') > 0
+
+    - name: Commit the cluster
+      command: '{{ riak_admin }} commit
+      when: riak_ring_status.stdout.find('joining') > 0
+```
+
+#### Riak Module
+
+```yaml
+---
+- hosts: riak
+  sudo: true
+  roles:
+    - { role: ansible-riak }
+  vars:
+    ring_leader: riak1@127.0.0.1
+  tasks:
+    - name: Join the cluster
+      riak: command=join target_node={{ ring_leader }}
+
+    - name: Check Riak Ring
+      shell: 'riak-admin cluster status'
+      register: riak_ring_status
+
+    - name: Plan the cluster
+      riak: command=plan wait_for_ring=300
+      when: riak_ring_status.stdout.find('joining') > 0
+
+    - name: Commit the cluster
+      riak: command=commit wait_for_handoffs=300
+      when: riak_ring_status.stdout.find('joining') > 0
+```
 
 ## Contributing
 
