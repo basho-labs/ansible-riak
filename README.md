@@ -80,22 +80,24 @@ To build a cluster, you need to command your Riak node to [join the cluster](htt
     ring_leader: riak1@127.0.0.1
   tasks:
     - name: Join the cluster
-      command: '{{ riak_admin }} join {{ ring_leader }}'
+      command: '{{ riak_admin }} cluster join {{ ring_leader }}'
 
     - name: Check Riak Ring
       command: '{{ riak_admin }} cluster status'
       register: riak_ring_status
 
     - name: Plan the cluster
-      command: '{{ riak_admin }} plan'
+      command: '{{ riak_admin }} cluster plan'
       when: riak_ring_status.stdout.find('joining') > 0
 
     - name: Commit the cluster
-      command: '{{ riak_admin }} commit
+      command: '{{ riak_admin }} cluster commit
       when: riak_ring_status.stdout.find('joining') > 0
 ```
 
 #### Riak Module
+
+The Riak module is very useful, however it is considered an [Extras module](http://docs.ansible.com/ansible/modules_extra.html), so it is not part of the core install of Ansible. The command module method above does not require additional steps to use.
 
 ```yaml
 ---
