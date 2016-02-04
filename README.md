@@ -97,7 +97,8 @@ To [build a cluster](http://docs.basho.com/riak/latest/ops/building/basic-cluste
 
 #### Riak Module
 
-The Riak module is very useful, however it is considered an [Extras module](http://docs.ansible.com/ansible/modules_extra.html), so it is not part of the core install of Ansible. The command module method above does not require additional steps to use.
+The Riak module has the additional benefit of using the wait_for_ring & wait_for_handoffs functionality.
+
 
 ```yaml
 ---
@@ -112,7 +113,7 @@ The Riak module is very useful, however it is considered an [Extras module](http
       riak: command=join target_node={{ ring_leader }}
 
     - name: Check Riak Ring
-      shell: 'riak-admin cluster status'
+      command: 'riak-admin cluster status'
       register: riak_ring_status
 
     - name: Plan the cluster
