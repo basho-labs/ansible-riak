@@ -66,7 +66,7 @@ Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant)
 
 #### Building a Cluster
 
-To build a cluster, you need to command your Riak node to [join the cluster](http://docs.basho.com/riak/latest/ops/running/cluster-admin/#join) by providing it the ring leader. With this role, there are two ways you can do this. Via the [command module](http://docs.ansible.com/ansible/command_module.html) and cli tool riak-admin or via the [Ansible Riak module](http://docs.ansible.com/ansible/riak_module.html).
+To [build a cluster](http://docs.basho.com/riak/latest/ops/building/basic-cluster-setup/), you need to command your Riak node to [join the cluster](http://docs.basho.com/riak/latest/ops/running/cluster-admin/#join) by providing it the ring leader. With this role, there are two ways you can do this. Via the [command module](http://docs.ansible.com/ansible/command_module.html) and cli tool riak-admin or via the [Ansible Riak module](http://docs.ansible.com/ansible/riak_module.html).
 
 #### Command Module
 
@@ -127,14 +127,6 @@ The Riak module is very useful, however it is considered an [Extras module](http
 ## Contributing
 
 This repo's maintainers are engineers at Basho and we welcome your contribution to the project! You can start by reviewing [CONTRIBUTING.md](CONTRIBUTING.md) for information on everything from testing to coding standards.
-
-### An honest disclaimer
-
-Due to our obsession with stability and our rich ecosystem of users, community updates on this repo may take a little longer to review.
-
-The most helpful way to contribute is by reporting your experience through issues. Issues may not be updated while we review internally, but they're still incredibly appreciated.
-
-Thank you for being part of the community! We love you for it.
 
 ## Roadmap
 

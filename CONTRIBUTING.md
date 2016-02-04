@@ -6,7 +6,7 @@ This role is designed to be used with the [Ansible Galaxy](https://galaxy.ansibl
 
 	ansible-galaxy install christophermancini.riak-kv
 
- What's a role?  How do I use them? Check out[ this link](http://docs.ansible.com/playbooks_roles.html#roles).
+What's a role?  How do I use them? Check out[ this link](http://docs.ansible.com/playbooks_roles.html#roles).
 
 If you wish to tweak this role yourself, you'll need to name your local repo the same way Ansible Galaxy would because module dependencies are mapped with Ansible Galaxy's naming scheme.
 
@@ -23,14 +23,6 @@ Example:
 
 	cd /path/to/my/roles
 	git clone https://github.com/basho/ansible-riak.git christophermancini.riak-kv
-
-### An honest disclaimer
-
-Due to our obsession with stability and our rich ecosystem of users, community updates on this repo may take a little longer to review.
-
-The most helpful way to contribute is by reporting your experience through issues. Issues may not be updated while we review internally, but they're still incredibly appreciated.
-
-Thank you for being part of the community! We love you for it.
 
 ## Helping through sample code
 
