@@ -91,7 +91,7 @@ To [build a cluster](http://docs.basho.com/riak/latest/ops/building/basic-cluste
       when: riak_ring_status.stdout.find('joining') > 0
 
     - name: Commit the cluster
-      command: '{{ riak_admin }} cluster commit
+      command: '{{ riak_admin }} cluster commit'
       when: riak_ring_status.stdout.find('joining') > 0
 ```
 
