@@ -18,7 +18,7 @@
 
 ### Ansible Galaxy Install
 
-`$ ansible-galaxy install christophermancini.riak-kv`
+`$ ansible-galaxy install basho-labs.riak-kv`
 
 Then reference the role in your playbooks or other roles using the key `christophermancini.riak-kv`.
 
