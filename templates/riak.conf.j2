@@ -326,7 +326,7 @@ listener.protobuf.internal = {{ riak_pb_bind_ip }}:{{ riak_pb_port }}
 ##
 ## Acceptable values:
 ##   - one of: active, passive, active-debug
-anti_entropy = active
+anti_entropy = {{ riak_anti_entropy }}
 
 ## Specifies the storage engine used for Riak's key-value data
 ## and secondary indexes (if supported).
