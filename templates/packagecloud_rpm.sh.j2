@@ -99,8 +99,8 @@ curl_check
 
 get_hostname
 
-yum_repo_path=/etc/yum.repos.d/basho_riak.repo
-yum_repo_config_url="https://packagecloud.io/install/repositories/basho/riak/config_file.repo?os=${os}&dist=${major_version}&name=${host}&source=script"
+yum_repo_path=/etc/yum.repos.d/basho_{{ riak_package }}.repo
+yum_repo_config_url="https://packagecloud.io/install/repositories/basho/{{ riak_package }}/config_file.repo?os=${os}&dist=${major_version}&name=${host}&source=script"
 
 echo "Downloading repository file: ${yum_repo_config_url}"
 
@@ -141,7 +141,7 @@ else
 fi
 
 echo "Installing pygpgme to verify GPG signatures..."
-yum install -y pygpgme --disablerepo='basho_riak'
+yum install -y pygpgme --disablerepo='basho_{{ riak_package }}'
 pypgpme_check=`rpm -qa | grep -qw pygpgme`
 if [ "$?" != "0" ]; then
   echo
@@ -152,11 +152,11 @@ if [ "$?" != "0" ]; then
   echo
 
   # set the repo_gpgcheck option to 0
-  sed -i'' 's/repo_gpgcheck=1/repo_gpgcheck=0/' /etc/yum.repos.d/basho_riak.repo
+  sed -i'' 's/repo_gpgcheck=1/repo_gpgcheck=0/' /etc/yum.repos.d/basho_{{ riak_package }}.repo
 fi
 
 echo "Installing yum-utils..."
-yum install -y yum-utils --disablerepo='basho_riak'
+yum install -y yum-utils --disablerepo='basho_{{ riak_package }}'
 yum_utils_check=`rpm -qa | grep -qw yum-utils`
 if [ "$?" != "0" ]; then
   echo
@@ -165,6 +165,6 @@ if [ "$?" != "0" ]; then
   echo
 fi
 
-echo "Generating yum cache for basho_riak..."
-yum -q makecache -y --disablerepo='*' --enablerepo='basho_riak'
+echo "Generating yum cache for basho_{{ riak_package }}..."
+yum -q makecache -y --disablerepo='*' --enablerepo='basho_{{ riak_package }}'
 
