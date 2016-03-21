@@ -32,6 +32,8 @@ riak_leveldb_max_mem_percent:   70
 
 riak_net_speed:     1Gb
 
+riak_anti_entropy: active
+
 # disc tuning
 riak_filesystem:    ext4
 riak_mountpoint:    /
