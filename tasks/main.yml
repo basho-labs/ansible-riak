@@ -37,13 +37,28 @@
   stat: path=/etc/riak/riak.conf.dist
   register: dist
 
+- name: Check if this is first pass
+  stat: path=/etc/riak/riak_shell.config.dist
+  register: distts
+  when: riak_package == "riak-ts"
+
 - name: preserve distribution copy of riak.conf if not already done
   command: "cp -i /etc/riak/riak.conf /etc/riak/riak.conf.dist"
   tags: configfiles
   when: not dist.stat.exists
 
+- name: preserve distribution copy of riak_shell.config if not already done
+  command: "cp -i /etc/riak/riak_shell.config /etc/riak/riak_shell.config.dist"
+  tags: configfiles
+  when: riak_package == "riak-ts" and not distts.stat.exists
+
 - name: install riak.conf with templated configuration
   template: src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444
+  notify: restart riak
+
+- name: install riak_shell.config with templated configuration
+  template: src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444
+  when: riak_package == "riak-ts"
   notify: restart riak
 
 - name: Make certain Riak is started and set to start on boot

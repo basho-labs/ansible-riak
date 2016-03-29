@@ -1,0 +1,15 @@
+%%% -*- erlang -*-
+[
+ {riak_shell, [
+              {logging, off},
+              {cookie, riak},
+              {show_connection_status, false},
+              {nodes, [
+{% for node in riak_shell_nodes %}
+                       '{{ node }}'{% if not loop.last %},
+{% endif %}
+{% endfor %}
+
+                      ]}
+             ]}
+].

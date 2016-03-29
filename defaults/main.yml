@@ -34,6 +34,12 @@ riak_net_speed:     1Gb
 
 riak_anti_entropy: active
 
+# riak_shell configuration
+riak_shell_group: 'riak'
+riak_shell_conf_template: riak_shell.config.j2
+riak_shell_nodes_list: "{% for host in groups[riak_shell_group] %}riak@{{ hostvars[host]['ansible_eth1']['ipv4']['address'] }} {% endfor %}"
+riak_shell_nodes: "{{ riak_shell_nodes_list.split() }}"
+
 # disc tuning
 riak_filesystem:    ext4
 riak_mountpoint:    /
