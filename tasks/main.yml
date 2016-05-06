@@ -58,7 +58,7 @@
 
 - name: install riak_shell.config with templated configuration
   template: src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444
-  when: riak_package == "riak-ts"
+  when: riak_package == "riak-ts" and riak_shell_nodes is defined
   notify: restart riak
 
 - name: Make certain Riak is started and set to start on boot
