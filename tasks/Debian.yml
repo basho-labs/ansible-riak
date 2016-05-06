@@ -4,7 +4,7 @@
   tags: Debian
 
 - name: Install Pre-requisites
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  package: name={{ item }} state=present update_cache=yes cache_valid_time=3600
   tags: Debian
   with_items:
   - curl
@@ -12,7 +12,6 @@
   - openjdk-7-jre
 
 - name: Fetch ansible ansible_version
-  sudo: false
   local_action: shell ansible --version
   register: ans_ver
 
@@ -30,7 +29,7 @@
   template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
 
 - name: Install Riak for Debian
-  apt: name={{ riak_package }} state=present update_cache=yes
+  package: name={{ riak_package }} state=present update_cache=yes
   tags: Debian
 
 - name: Set the riak ulimit for Debian

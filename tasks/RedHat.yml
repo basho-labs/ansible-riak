@@ -4,7 +4,7 @@
   tags: RedHat
 
 - name: "Install Java & libselinux-python"
-  yum: "name={{ item }} state=present"
+  package: "name={{ item }} state=present"
   tags: RedHat
   with_items:
     - java-1.7.0-openjdk
@@ -23,5 +23,5 @@
   when: not dist.stat.exists
 
 - name: Install Riak for RedHat
-  yum: "name={{ riak_package }} state=present"
+  package: "name={{ riak_package }} state=present"
   tags: RedHat
