@@ -5,10 +5,11 @@
 
 - name: Create bucket types only if not found in list
   command: '{{ riak_admin }} bucket-type create {{ item.name }} ''{{ item.props }}'''
-  with_items: riak_bucket_types
+  with_items: '{{ riak_bucket_types }}'
   when: riak_bucket_types is defined and types.stdout.find(item.name) < 0
+  ignore_errors: true
 
 - name: Activate bucket types that are not active
   command: '{{ riak_admin }} bucket-type activate {{ item.name }}'
-  with_items: riak_bucket_types
+  with_items: '{{ riak_bucket_types }}'
   when: riak_bucket_types is defined and types.stdout.find(item.name + " (active)") < 0
