@@ -62,6 +62,11 @@ riak_scheduler:     noop
 #  - { name: maps, props: '{"props":{"datatype":"map"}}' }
 #  - { name: sets, props: '{"props":{"datatype":"set"}}' }
 
+# Create groups
+#
+#riak_groups:
+#  - admins
+#  - keysusers
 
 # Create users
 #
