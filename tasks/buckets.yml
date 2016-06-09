@@ -13,3 +13,4 @@
   command: '{{ riak_admin }} bucket-type activate {{ item.name }}'
   with_items: '{{ riak_bucket_types }}'
   when: riak_bucket_types is defined and types.stdout.find(item.name + " (active)") < 0
+  ignore_errors: true
