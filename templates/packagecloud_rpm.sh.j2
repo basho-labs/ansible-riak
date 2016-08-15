@@ -89,7 +89,7 @@ main ()
   curl_check
 
 
-  yum_repo_config_url="https://packagecloud.io/install/repositories/basho/{{ riak_package }}/config_file.repo?os=${os}&dist=${dist}&source=script"
+  yum_repo_config_url="https://packagecloud.io/install/repositories/basho/{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}/config_file.repo?os=${os}&dist=${dist}&source=script"
 
   yum_repo_path=/etc/yum.repos.d/basho_{{ riak_package }}.repo
 
@@ -141,7 +141,7 @@ main ()
   fi
 
   echo "Installing pygpgme to verify GPG signatures..."
-  yum install -y pygpgme --disablerepo='basho_{{ riak_package }}'
+  yum install -y pygpgme --disablerepo='basho_{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}'
   pypgpme_check=`rpm -qa | grep -qw pygpgme`
   if [ "$?" != "0" ]; then
     echo
@@ -152,11 +152,11 @@ main ()
     echo
 
     # set the repo_gpgcheck option to 0
-    sed -i'' 's/repo_gpgcheck=1/repo_gpgcheck=0/' /etc/yum.repos.d/basho_{{ riak_package }}.repo
+    sed -i'' 's/repo_gpgcheck=1/repo_gpgcheck=0/' /etc/yum.repos.d/basho_{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}.repo
   fi
 
   echo "Installing yum-utils..."
-  yum install -y yum-utils --disablerepo='basho_{{ riak_package }}'
+  yum install -y yum-utils --disablerepo='basho_{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}'
   yum_utils_check=`rpm -qa | grep -qw yum-utils`
   if [ "$?" != "0" ]; then
     echo
@@ -165,8 +165,8 @@ main ()
     echo
   fi
 
-  echo "Generating yum cache for basho_{{ riak_package }}..."
-  yum -q makecache -y --disablerepo='*' --enablerepo='basho_{{ riak_package }}'
+  echo "Generating yum cache for basho_{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}..."
+  yum -q makecache -y --disablerepo='*' --enablerepo='basho_{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}'
 
   echo
   echo "The repository is setup! You can now install packages."

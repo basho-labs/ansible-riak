@@ -86,5 +86,6 @@ riak_scheduler:     noop
 # Create permission grants
 #
 #riak_grants:
-#  - {subject: 'user', bucket_type: 'certificate', bucket: '', permissions: ''}
-#  - {subject: 'group', bucket_type: 'password', bucket: '', permissions: ''}
+#  - {subject: 'all', scope: 'any', permissions: ''}
+#  - {subject: 'user', scope: 'mybuckettype', permissions: ''}
+#  - {subject: 'group', scope: 'mybuckettype mybucket', permissions: ''}

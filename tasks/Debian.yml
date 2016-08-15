@@ -11,19 +11,9 @@
   - apt-transport-https
   - openjdk-7-jre
 
-- name: Fetch ansible ansible_version
-  local_action: shell ansible --version
-  register: ans_ver
-
 - name: Add Package Cloud repository key without validation
   apt_key: url=https://packagecloud.io/gpg.key state=present validate_certs=no
   tags: Debian
-  when: ans_ver.stdout.find(' 1.5.') > 0
-
-- name: Add Package Cloud repository key with validation
-  apt_key: url=https://packagecloud.io/gpg.key state=present
-  tags: Debian
-  when: ans_ver.stdout.find(' 1.5.') < 0
 
 - name: Add Basho Riak repository (hosted at Package Cloud)
   template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
