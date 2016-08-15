@@ -1,8 +1,21 @@
 ---
+- name: Enable Security
+  command: '{{ riak_admin }} security enable'
+
+- name: Create Groups
+  command: '{{ riak_admin }} security add-group {{ item }}'
+  with_items: '{{ riak_groups }}'
+  when: riak_groups is defined
+
+- name: Create users
+  command: '{{ riak_admin }} security add-user {{ item.user }} password={{ item.password }} groups={{ item.groups }}'
+  with_items: "{{ riak_users }}"
+  when: (riak_users is defined) and (riak_groups is defined)
+
 - name: Create users
   command: '{{ riak_admin }} security add-user {{ item.user }} password={{ item.password }}'
-  with_items: '{{ riak_users }}'
-  when: riak_users is defined
+  with_items: "{{ riak_users }}"
+  when: (riak_users is defined) and (riak_groups is not defined) 
 
 - name: Create security sources
   command: '{{ riak_admin }} security add-source {{ item.user }} {{ item.cidr }} {{ item.type }}'
