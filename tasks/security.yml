@@ -1,6 +1,7 @@
 ---
 - name: Enable Security
   command: '{{ riak_admin }} security enable'
+  when: riak_security_enabled
 
 - name: Create Groups
   command: '{{ riak_admin }} security add-group {{ item }}'

@@ -34,6 +34,8 @@ riak_net_speed:     1Gb
 
 riak_anti_entropy: active
 
+riak_security_enabled: false
+
 # riak_shell configuration
 riak_shell_group: 'riak'
 riak_shell_interface: 'ansible_eth0'
