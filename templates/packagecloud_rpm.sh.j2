@@ -91,7 +91,7 @@ main ()
 
   yum_repo_config_url="https://packagecloud.io/install/repositories/basho/{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}/config_file.repo?os=${os}&dist=${dist}&source=script"
 
-  yum_repo_path=/etc/yum.repos.d/basho_{{ riak_package }}.repo
+  yum_repo_path=/etc/yum.repos.d/basho_{% if 'riak-ts' in riak_package %}riak-ts{% else %}riak{% endif %}.repo
 
   echo "Downloading repository file: ${yum_repo_config_url}"
 
