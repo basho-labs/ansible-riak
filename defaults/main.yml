@@ -15,18 +15,19 @@ riak_conf_template: riak.conf.j2
 
 riak_node_name:     'riak@{{ ansible_fqdn }}'
 
-riak_ring_size:     64
-
-riak_backend:   bitcask
-
 riak_pb_bind_ip:    0.0.0.0
 riak_pb_port:       8087
 
 riak_http_bind_ip:  0.0.0.0
 riak_http_port:     8098
 
-riak_control:   "off"
-riak_search:   "off"
+riak_https_bind_ip: 0.0.0.0
+riak_https_port:    10011
+
+riak_ring_size:     64
+riak_backend:       bitcask
+riak_control:       'off'
+riak_search:        'off'
 
 riak_leveldb_max_mem_percent:   70
 

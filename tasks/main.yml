@@ -30,15 +30,15 @@
   template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
 
 - name: copy custom beams
-  synchronize: src={{ riak_custom_beams_dir }} dest={{ riak_patch_dir }}
+  synchronize: "src={{ riak_custom_beams_dir }} dest={{ riak_patch_dir }}"
   when: riak_custom_beams_dir is defined
 
 - name: install riak.conf with templated configuration
-  template: src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444 backup=yes
+  template: "src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444 backup=yes"
   notify: restart riak
 
 - name: install riak_shell.config with templated configuration
-  template: src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444
+  template: "src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444"
   when: riak_package == "riak-ts" and riak_shell_nodes is defined
   notify: restart riak
 
@@ -46,7 +46,7 @@
   service: name=riak enabled=yes state=started
 
 - name: Wait for Riak to start up before continuing
-  wait_for: delay=5 timeout=30 host={{ riak_pb_bind_ip }} port={{ riak_pb_port }} state=started
+  wait_for: "delay=5 timeout=30 host={{ riak_pb_bind_ip }} port={{ riak_pb_port }} state=started"
 
 - name: Bucket operations
   include: buckets.yml
