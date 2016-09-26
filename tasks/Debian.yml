@@ -1,8 +1,4 @@
 ---
-- name: Include DEB vars
-  include_vars: Debian.yml
-  tags: Debian
-
 - name: Install Pre-requisites
   package: name={{ item }} state=present update_cache=yes cache_valid_time=3600
   tags: Debian

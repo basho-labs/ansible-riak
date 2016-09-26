@@ -7,7 +7,6 @@
 riak_package:       riak
 
 riak_enterprise:    false
-riak_usr_lib:       /usr/lib
 
 riak_admin:   '/usr/sbin/riak-admin'
 

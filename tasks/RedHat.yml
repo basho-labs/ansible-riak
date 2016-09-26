@@ -1,8 +1,4 @@
 ---
-- name: Include RHEL vars
-  include_vars: RedHat.yml
-  tags: RedHat
-
 - name: "Install Java & libselinux-python"
   package: "name={{ item }} state=present"
   tags: RedHat
