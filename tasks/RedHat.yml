@@ -16,7 +16,8 @@
 - name: Install package cloud repo if Riak is not already installed
   command: '/tmp/packagecloud_rpm.sh'
   tags: RedHat
-  when: not dist.stat.exists
+  when:
+    - not dist.stat.exists
 
 - name: Install Riak for RedHat
   package: "name={{ riak_package }} state=present"

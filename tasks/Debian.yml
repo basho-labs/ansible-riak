@@ -5,18 +5,34 @@
   with_items:
   - curl
   - apt-transport-https
-  - openjdk-7-jre
+  - default-jre
+
+- name: Check if Riak is installed
+  stat: path=/etc/riak/riak.conf
+  register: dist
 
 - name: Add Package Cloud repository key without validation
   apt_key: url=https://packagecloud.io/gpg.key state=present validate_certs=no
   tags: Debian
+  when:
+    - not dist.stat.exists
 
 - name: Add Basho Riak repository (hosted at Package Cloud)
   template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
+  when:
+    - not dist.stat.exists
 
 - name: Install Riak for Debian
-  package: name={{ riak_package }} state=present update_cache=yes
+  package: "name={{ riak_package }} state=present update_cache=yes"
   tags: Debian
+  when: "'deb' not in riak_package"
+
+- name: Install Riak for Debian
+  apt: "deb={{ riak_package }}"
+  tags: Debian
+  when:
+    - "'deb' in riak_package"
+    - not dist.stat.exists
 
 - name: Set the riak ulimit for Debian
   copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak
