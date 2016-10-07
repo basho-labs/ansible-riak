@@ -1,0 +1,36 @@
+---
+- hosts: riak-test
+  connection: local
+  become: yes
+  become_method: sudo
+  roles:
+    - ansible-riak
+  vars:
+    riak_node_name: "riak@127.0.0.1"
+    riak_pb_bind_ip: 127.0.0.1
+    riak_pb_port:    8087
+    riak_http_bind_ip: 127.0.0.1
+    riak_http_port:    8098
+
+    riak_bucket_types:
+      - { name: counters, props: '{"props":{"datatype":"counter"}}' }
+      - { name: maps, props: '{"props":{"datatype":"map"}}' }
+      - { name: sets, props: '{"props":{"datatype":"set"}}' }
+
+    riak_users:
+      - {user: 'riakuser', password: '', cert: '', groups: ''}
+      - {user: 'riakpass', password: 'Test1234', cert: '', groups: ''}
+      - {user: 'riakadmin', password: '', cert: '', groups: 'admins'}
+      - {user: 'riakdeveloper', password: '', cert: '', groups: 'developers'}
+
+    riak_groups:
+      - admins
+      - developers
+
+    riak_sources:
+      - {user: 'riakuser', type: 'certificate', cidr: '0.0.0.0/0'}
+      - {user: 'riakpass', type: 'password', cidr: '0.0.0.0/0'}
+
+    riak_grants:
+      - {subject: 'riakuser', container: 'any', permissions: 'riak_kv.get,riak_kv.put'}
+      - {subject: 'riakpass', container: 'any', permissions: 'riak_kv.get,riak_kv.put'}
