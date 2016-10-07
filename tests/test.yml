@@ -32,5 +32,5 @@
       - {user: 'riakpass', type: 'password', cidr: '0.0.0.0/0'}
 
     riak_grants:
-      - {subject: 'riakuser', container: 'any', permissions: 'riak_kv.get,riak_kv.put'}
-      - {subject: 'riakpass', container: 'any', permissions: 'riak_kv.get,riak_kv.put'}
+      - {subject: 'riakuser', scope: 'any', permissions: 'riak_kv.get,riak_kv.put'}
+      - {subject: 'riakpass', scope: 'any', permissions: 'riak_kv.get,riak_kv.put'}
