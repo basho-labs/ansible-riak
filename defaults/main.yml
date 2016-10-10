@@ -7,7 +7,6 @@
 riak_package:       riak
 
 riak_enterprise:    false
-riak_usr_lib:       /usr/lib
 
 riak_admin:   '/usr/sbin/riak-admin'
 
@@ -15,24 +14,27 @@ riak_conf_template: riak.conf.j2
 
 riak_node_name:     'riak@{{ ansible_fqdn }}'
 
-riak_ring_size:     64
-
-riak_backend:   bitcask
-
 riak_pb_bind_ip:    0.0.0.0
 riak_pb_port:       8087
 
 riak_http_bind_ip:  0.0.0.0
 riak_http_port:     8098
 
-riak_control:   "off"
-riak_search:   "off"
+riak_https_bind_ip: 0.0.0.0
+riak_https_port:    10011
+
+riak_ring_size:     64
+riak_backend:       bitcask
+riak_control:       'off'
+riak_search:        'off'
 
 riak_leveldb_max_mem_percent:   70
 
 riak_net_speed:     1Gb
 
 riak_anti_entropy: active
+
+riak_security_enabled: false
 
 # riak_shell configuration
 riak_shell_group: 'riak'
@@ -86,5 +88,6 @@ riak_scheduler:     noop
 # Create permission grants
 #
 #riak_grants:
-#  - {subject: 'user', bucket_type: 'certificate', bucket: '', permissions: ''}
-#  - {subject: 'group', bucket_type: 'password', bucket: '', permissions: ''}
+#  - {subject: 'all', scope: 'any', permissions: ''}
+#  - {subject: 'user', scope: 'mybuckettype', permissions: ''}
+#  - {subject: 'group', scope: 'mybuckettype mybucket', permissions: ''}

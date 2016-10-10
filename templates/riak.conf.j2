@@ -313,7 +313,7 @@ listener.protobuf.internal = {{ riak_pb_bind_ip }}:{{ riak_pb_port }}
 ##
 ## Acceptable values:
 ##   - an IP/port pair, e.g. 127.0.0.1:10011
-## listener.https.internal = 127.0.0.1:8098
+{% if not riak_security_enabled %}#{% endif %}listener.https.internal = {{ riak_https_bind_ip }}:{{ riak_https_port }}
 
 ## How Riak will repair out-of-sync keys. Some features require
 ## this to be set to 'active', including search.
@@ -501,4 +501,3 @@ search.solr.jmx_port = 8985
 ## Acceptable values:
 ##   - text
 search.solr.jvm_options = -d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops
-

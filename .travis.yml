@@ -1,0 +1,34 @@
+---
+language: python
+python: "2.7"
+
+sudo: required
+dist: trusty
+
+addons:
+  hosts:
+    - riak-test
+
+install:
+  - sudo apt-get install -y software-properties-common python-software-properties
+  - sudo add-apt-repository -y ppa:ansible/ansible
+  - sudo apt-get update -y
+  - sudo apt-get install -y ansible
+  - echo 'riak-test' | sudo tee -a /etc/ansible/hosts
+
+  # Check ansible version
+  - ansible --version
+
+  # Create ansible.cfg with correct roles_path
+  - 'printf "[defaults]\nroles_path=../" > ansible.cfg'
+
+env:
+  - ANSIBLE_HOST_KEY_CHECKING=False
+
+script:
+  - ansible-playbook tests/test.yml -v
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/
+  slack:
+    secure: ZtgcjTxhTxrzWW6MIHLRtucW/BMm42RKS3nGRtSfgER9rx7oJ0Y9gOYkh1FM0GsM7Z11Q/iDhWs/8WTccAV0PrMZ6KHaq54wGmfYyqwPM4YreUwQ87PnOW4wZbl0TJTeWutasEwZvnVJ8VEyyQcS2PHt0zlsENn0XWvobvaZ+FM=

@@ -4,7 +4,7 @@ galaxy_info:
   description: "Installs and configures Riak KV and TS, a distributed, highly available NoSQL and TimeSeries database."
   company: Basho
   license: Apache
-  min_ansible_version: 2.0
+  min_ansible_version: 2.1
   platforms:
   - name: EL
     versions:
