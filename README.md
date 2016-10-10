@@ -1,6 +1,6 @@
-# Ansible Role for Riak KV
+# Ansible Role for Riak KV & TS
 
-**Ansible Riak** is an Ansible role designed to install & configure Riak KV. In combination with Ansible hosts, it can be used to configure a single node or an [entire cluster](#building-a-cluster).
+**Ansible Riak** is an Ansible role designed to install & configure Riak KV & TS. In combination with Ansible hosts, it can be used to configure a single node or an [entire cluster](#building-a-cluster).
 
 1. [Installation](#installation)
 1. [Documentation](#documentation)
@@ -14,7 +14,7 @@
 
 ### Dependencies
 
-* Ansible 1.6+
+* Ansible 2.0+
 
 ### Ansible Galaxy Install
 
@@ -63,6 +63,21 @@ There are two different ways to override the default template:
 #### Overriding Default Variables via Role Dependency
 
 Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant) that some of us use to test our client libs. In this package, we [created a role](https://github.com/basho-labs/riak-clients-vagrant/tree/master/provisioning/roles/integration_testing) that sets up the environment needed for our library tests and declares [this role as a dependency](https://github.com/basho-labs/riak-clients-vagrant/blob/master/provisioning/roles/integration_testing/meta/main.yml).
+
+#### Installing Riak TS
+
+```yaml
+---
+- hosts: riakts
+  sudo: true
+  roles:
+    - { role: ansible-riak }
+  vars:
+    riak_package: 'riak-ts'
+    riak_backend: leveldb
+    riak_node_name: "riak@{{ ansible_default_ipv4['address'] }}"
+    riak_shell_group: 'riak-ts'
+```
 
 #### Building a Cluster
 
