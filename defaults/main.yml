@@ -63,19 +63,21 @@ riak_scheduler:     noop
 #  - { name: counters, props: '{"props":{"datatype":"counter"}}' }
 #  - { name: maps, props: '{"props":{"datatype":"map"}}' }
 #  - { name: sets, props: '{"props":{"datatype":"set"}}' }
+riak_bucket_types: []
 
 # Create groups
 #
 #riak_groups:
 #  - admins
 #  - keysusers
+riak_groups: []
 
 # Create users
 #
 #riak_users:
 #  - {user: 'user1', password: '', cert: ''}
 #  - {user: 'user2', password: 'somepassword_that_is_more_complex_than_this', cert: ''}
-
+riak_users: []
 
 # Create security sources
 #riak_sources:
@@ -83,7 +85,7 @@ riak_scheduler:     noop
 #  - {user: 'user2', type: 'password', cidr: '0.0.0.0/0'}
 #  - {user: 'user3', type: 'trust', cidr: '0.0.0.0/0'}
 #  - {user: 'user4', type: 'pam', cidr: '0.0.0.0/0'}
-
+riak_sources: []
 
 # Create permission grants
 #
@@ -91,3 +93,4 @@ riak_scheduler:     noop
 #  - {subject: 'all', scope: 'any', permissions: ''}
 #  - {subject: 'user', scope: 'mybuckettype', permissions: ''}
 #  - {subject: 'group', scope: 'mybuckettype mybucket', permissions: ''}
+riak_grants: []
