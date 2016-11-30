@@ -34,7 +34,14 @@ riak_net_speed:     1Gb
 
 riak_anti_entropy: active
 
-riak_security_enabled: false
+riak_security_enabled:  false
+riak_install_java:      true
+
+# Debian
+# riak_java_package: default-jdk
+
+# RHEL
+# riak_java_package: java-1.7.0-openjdk
 
 # riak_shell configuration
 riak_shell_group: 'riak'

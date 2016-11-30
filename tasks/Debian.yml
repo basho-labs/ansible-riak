@@ -5,7 +5,16 @@
   with_items:
   - curl
   - apt-transport-https
-  - default-jre
+
+- name: Install JDK
+  package: name={{ riak_java_package }} state=present update_cache=yes cache_valid_time=3600
+  tags: Debian
+  when: 'riak_install_java and riak_java_package is defined'
+
+- name: Install JDK
+  package: name=default-jdk state=present update_cache=yes cache_valid_time=3600
+  tags: Debian
+  when: 'riak_install_java and riak_java_package is undefined'
 
 - name: Check if Riak is installed
   stat: path=/etc/riak/riak.conf
