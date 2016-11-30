@@ -7,9 +7,6 @@
   include: Debian.yml
   when: ansible_os_family == 'Debian'
 
-- name: update pam configuration
-  copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf owner=root group=root mode=0644
-
 - name: mount the riak volume with optmized settings
   mount: name={{ riak_mountpoint }} src={{ riak_partition }} opts="{{riak_mount_options}}" fstype="{{riak_filesystem}}" state=mounted
   when: riak_tune_disks

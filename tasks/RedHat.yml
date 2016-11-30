@@ -24,6 +24,9 @@
   tags: RedHat
   template: src=packagecloud_rpm.sh.j2 dest=/tmp/packagecloud_rpm.sh group=root mode=0755
 
+- name: Set ulimit for open files
+  copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf owner=root group=root mode=0644
+
 - name: Install package cloud repo if Riak is not already installed
   command: '/tmp/packagecloud_rpm.sh'
   tags: RedHat
