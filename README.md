@@ -1,5 +1,8 @@
 # Ansible Role for Riak KV & TS
 
+[![Build Status](https://travis-ci.org/basho-labs/puppet-riak.svg?branch=master)](https://travis-ci.org/basho-labs/ansible-riak)
+[![Ansible Galaxy](https://img.shields.io/ansible/role/8095.svg?maxAge=2592000)](https://galaxy.ansible.com/basho-labs/riak-kv/)
+
 **Ansible Riak** is an Ansible role designed to install & configure Riak KV & TS. In combination with Ansible hosts, it can be used to configure a single node or an [entire cluster](#building-a-cluster).
 
 1. [Installation](#installation)
@@ -14,7 +17,7 @@
 
 ### Dependencies
 
-* Ansible 2.0+
+* Ansible 2.1+
 
 ### Ansible Galaxy Install
 
