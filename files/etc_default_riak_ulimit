@@ -1,1 +1,1 @@
-ulimit -n 65536
+ulimit -n 131072
