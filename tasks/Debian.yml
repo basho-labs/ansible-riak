@@ -48,12 +48,15 @@
   tags: Debian
   when: 'ansible_os_family == "Debian" and ansible_distribution_release != "xenial"'
 
-- name: Set the ulimit specifically for 16.04 Ubuntu
+- name: Set the ulimit for 16.04 Ubuntu
   copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.conf owner=root group=root
   tags: Debian
   when: 'ansible_os_family == "Debian" and ansible_distribution_release == "xenial"'
 
-- name: Update ulimit for root
-  lineinfile: 'dest=/etc/pam.d/common-session line="session required pam_limits.so" insertbefore="^exit 0"'
+- name: Configure PAM limits
+  lineinfile: 'dest=/etc/pam.d/{{ item }} line="session required pam_limits.so" insertbefore="^exit 0"'
   tags: Debian
   when: 'ansible_os_family == "Debian" and ansible_distribution_release == "xenial"'
+  with_items:
+    - common-session
+    - common-session-noninteractive
