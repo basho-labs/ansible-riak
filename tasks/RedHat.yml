@@ -6,12 +6,12 @@
     - libselinux-python
 
 - name: Install JRE
-  package: 'name={{ riak_java_package }} state=present update_cache=yes cache_valid_time=3600'
+  package: 'name={{ riak_java_package }} state=present update_cache=yes'
   tags: RedHat
   when: 'riak_install_java and riak_java_package is defined'
 
 - name: Install JRE
-  package: 'name=java-1.7.0-openjre state=present update_cache=yes cache_valid_time=3600'
+  package: 'name=java-1.7.0-openjdk state=present update_cache=yes'
   tags: RedHat
   when: 'riak_install_java and riak_java_package is undefined'
 
