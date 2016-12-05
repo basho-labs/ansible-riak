@@ -6,13 +6,13 @@
   - curl
   - apt-transport-https
 
-- name: Install JDK
+- name: Install JRE
   package: name={{ riak_java_package }} state=present update_cache=yes cache_valid_time=3600
   tags: Debian
   when: 'riak_install_java and riak_java_package is defined'
 
-- name: Install JDK
-  package: name=default-jdk state=present update_cache=yes cache_valid_time=3600
+- name: Install JRE
+  package: name=default-jre state=present update_cache=yes cache_valid_time=3600
   tags: Debian
   when: 'riak_install_java and riak_java_package is undefined'
 
@@ -25,11 +25,13 @@
   tags: Debian
   when:
     - not dist.stat.exists
+    - riak_install_package_cloud
 
 - name: Add Basho Riak repository (hosted at Package Cloud)
   template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
   when:
     - not dist.stat.exists
+    - riak_install_package_cloud
 
 - name: Install Riak for Debian
   package: "name={{ riak_package }} state=present update_cache=yes"

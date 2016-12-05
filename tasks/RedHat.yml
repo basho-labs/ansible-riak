@@ -5,13 +5,13 @@
   with_items:
     - libselinux-python
 
-- name: Install JDK
+- name: Install JRE
   package: 'name={{ riak_java_package }} state=present update_cache=yes cache_valid_time=3600'
   tags: RedHat
   when: 'riak_install_java and riak_java_package is defined'
 
-- name: Install JDK
-  package: 'name=java-1.7.0-openjdk state=present update_cache=yes cache_valid_time=3600'
+- name: Install JRE
+  package: 'name=java-1.7.0-openjre state=present update_cache=yes cache_valid_time=3600'
   tags: RedHat
   when: 'riak_install_java and riak_java_package is undefined'
 
@@ -23,6 +23,9 @@
 - name: Set up packagecloud install script
   tags: RedHat
   template: src=packagecloud_rpm.sh.j2 dest=/tmp/packagecloud_rpm.sh group=root mode=0755
+  when:
+    - not dist.stat.exists
+    - riak_install_package_cloud
 
 - name: Set ulimit for open files
   copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf owner=root group=root mode=0644
@@ -32,6 +35,7 @@
   tags: RedHat
   when:
     - not dist.stat.exists
+    - riak_install_package_cloud
 
 - name: Install Riak for RedHat
   package: "name={{ riak_package }} state=present"
