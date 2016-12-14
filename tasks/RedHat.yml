@@ -3,21 +3,39 @@
   package: "name={{ item }} state=present"
   tags: RedHat
   with_items:
-    - java-1.7.0-openjdk
     - libselinux-python
+
+- name: Install JRE
+  package: 'name={{ riak_java_package }} state=present update_cache=yes'
+  tags: RedHat
+  when: 'riak_install_java and riak_java_package is defined'
+
+- name: Install JRE
+  package: 'name=java-1.7.0-openjdk state=present update_cache=yes'
+  tags: RedHat
+  when: 'riak_install_java and riak_java_package is undefined'
 
 - name: Check if Riak is installed
   stat: path=/etc/riak/riak.conf
+  tags: RedHat
   register: dist
 
 - name: Set up packagecloud install script
+  tags: RedHat
   template: src=packagecloud_rpm.sh.j2 dest=/tmp/packagecloud_rpm.sh group=root mode=0755
+  when:
+    - not dist.stat.exists
+    - riak_install_package_cloud
+
+- name: Set ulimit for open files
+  copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf owner=root group=root mode=0644
 
 - name: Install package cloud repo if Riak is not already installed
   command: '/tmp/packagecloud_rpm.sh'
   tags: RedHat
   when:
     - not dist.stat.exists
+    - riak_install_package_cloud
 
 - name: Install Riak for RedHat
   package: "name={{ riak_package }} state=present"
