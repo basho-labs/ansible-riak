@@ -65,7 +65,7 @@ There are two different ways to override the default template:
 
 #### Overriding Default Variables via Role Dependency
 
-Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant) that some of us use to test our client libs. In this package, we [created a role](https://github.com/basho-labs/riak-clients-vagrant/tree/master/provisioning/roles/integration_testing) that sets up the environment needed for our library tests and declares [this role as a dependency](https://github.com/basho-labs/riak-clients-vagrant/blob/master/provisioning/roles/integration_testing/meta/main.yml).
+Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant) that some of us use to test our client libs. We also [created a role](https://github.com/basho-labs/ansible-roles/blob/b2a93e362a36bdcb0ec5dbbb781cac0b6a1f8f90/README.md#riak-kv-testing) that sets up the environment needed for our library tests and declares [this role as a dependency](https://github.com/basho-labs/ansible-roles/blob/b2a93e362a36bdcb0ec5dbbb781cac0b6a1f8f90/riak_testing/meta/main.yml#L4-L5).
 
 #### Installing Riak TS
 
