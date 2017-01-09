@@ -130,11 +130,11 @@ erlang.async_threads = 64
 ## The number of concurrent ports/sockets
 ## Valid range is 1024-134217727
 ##
-## Default: 65536
+## Default: 262144
 ##
 ## Acceptable values:
 ##   - an integer
-erlang.max_ports = 65536
+erlang.max_ports = 262144
 
 ## Set scheduler forced wakeup interval. All run queues will be
 ## scanned each Interval milliseconds. While there are sleeping
@@ -392,6 +392,70 @@ object.siblings.warning_threshold = 25
 ##   - an integer
 object.siblings.maximum = 100
 
+## Whether to allow list buckets.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.list_buckets = enabled
+
+## Whether to allow streaming list buckets.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.stream_list_buckets = enabled
+
+## Whether to allow list keys.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.list_keys = enabled
+
+## Whether to allow streaming list keys.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.stream_list_keys = enabled
+
+## Whether to allow secondary index queries.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.secondary_index = enabled
+
+## Whether to allow streaming secondary index queries.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.stream_secondary_index = enabled
+
+## Whether to allow term-based map-reduce.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.map_reduce = enabled
+
+## Whether to allow JavaScript map-reduce.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_kv.map_reduce_js = enabled
+
 ## A path under which bitcask data files will be stored.
 ##
 ## Default: $(platform_data_dir)/bitcask
@@ -454,6 +518,47 @@ riak_control.auth.mode = off
 ##   - an integer
 leveldb.maximum_memory.percent = {{ riak_leveldb_max_mem_percent }}
 
+## Enables or disables the compression of data on disk.
+## Enabling (default) saves disk space.  Disabling may reduce read
+## latency but increase overall disk activity.  Option can be
+## changed at any time, but will not impact data on disk until
+## next time a file requires compaction.
+##
+## Default: on
+##
+## Acceptable values:
+##   - on or off
+leveldb.compression = on
+
+## Selection of compression algorithms.  snappy is
+## original compression supplied for leveldb.  lz4 is new
+## algorithm that compresses to similar volume but averages twice
+## as fast on writes and four times as fast on reads.
+##
+## Acceptable values:
+##   - one of: snappy, lz4
+leveldb.compression.algorithm = lz4
+
+##
+## Default: on
+##
+## Acceptable values:
+##   - on or off
+## multi_backend.name.leveldb.compression = on
+
+##
+## Acceptable values:
+##   - one of: snappy, lz4
+## multi_backend.name.leveldb.compression.algorithm = lz4
+
+## Whether to allow search queries.
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.riak_search.query = enabled
+
 ## To enable Search set this 'on'.
 ##
 ## Default: off
@@ -501,3 +606,81 @@ search.solr.jmx_port = 8985
 ## Acceptable values:
 ##   - text
 search.solr.jvm_options = -d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops
+
+## The minimum batch size, in number of Riak objects. Any batches that
+## are smaller than this amount will not be immediately flushed to Solr,
+## but are guaranteed to be flushed within the
+## "search.queue.batch.flush_interval".
+##
+## Default: 10
+##
+## Acceptable values:
+##   - an integer
+## search.queue.batch.minimum = 10
+
+## The maximum batch size, in number of Riak objects. Any batches that are
+## larger than this amount will be split, where the first
+## search.queue.batch.maximum set of objects will be flushed to Solr, and
+## the remaining objects enqueued for that index will be retained until the
+## next batch is delivered. This parameter ensures that at most
+## "search.queue.batch.maximum object" will be delivered into Solr in any
+## given request.
+##
+## Default: 500
+##
+## Acceptable values:
+##   - an integer
+## search.queue.batch.maximum = 500
+
+## The maximum delay between notification to flush batches to Solr. This
+## setting is used to increase or decrease the frequency of batch delivery
+## into Solr, specifically for relatively low-volume input into Riak. This
+## setting ensures that data will be delivered into Solr in accordance with
+## the "search.queue.batch.minimum" and "search.queue.batch.maximum"
+## settings within the specified interval. Batches that are smaller than
+## "search.queue.batch.minimum" will be delivered to Solr within this
+## interval. This setting will generally hav no effect on heavily loaded
+## systems.
+##
+## Default: 500ms
+##
+## Acceptable values:
+##   - a time duration with units, e.g. '10s' for 10 seconds
+##   - the text "infinity"
+## search.queue.batch.flush_interval = 500ms
+
+## The queue high watermark. If the total number of queued messages in a
+## Solr Queue Worker instance exceeds this limit, then the calling vnode
+## will be blocked until the total number falls below this limit. This
+## parameter exercises flow control between Riak and the Riak
+## Search batching subsystem if writes into Solr start to fall behind.
+##
+## Default: 1000
+##
+## Acceptable values:
+##   - an integer
+## search.queue.high_watermark = 1000
+
+## The strategy for how we handle purging when we hit the
+## search.queue.high_watermark.
+## - purge_one -> Removes the oldest item on the queue from an
+## erroring (references to fuses blown in the code) index in
+## order to get below the search.queue.high_watermark.
+## - purge_index -> Removes all items associated with one random
+## erroring (references to fuses blown in the code) index in
+## order to get below the search.queue.high_watermark.
+## - off -> purging is disabled
+##
+## Default: purge_one
+##
+## Acceptable values:
+##   - one of: purge_one, purge_index, off
+## search.queue.high_watermark.purge_strategy = purge_one
+
+## Whether to allow Yokozuna queries on this node
+##
+## Default: enabled
+##
+## Acceptable values:
+##   - enabled or disabled
+## cluster.job.yokozuna.query = enabled
