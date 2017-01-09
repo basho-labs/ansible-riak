@@ -80,6 +80,13 @@ Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant)
     riak_backend: leveldb
     riak_node_name: "riak@{{ ansible_default_ipv4['address'] }}"
     riak_shell_group: 'riak-ts'
+    riak_anti_entropy: off
+  tasks:
+    - name: Set object size warning threshold
+      lineinfile: 'dest=/etc/riak/riak.conf line="object.size.warning_threshold = 50K" regexp: "^object.size.warning_threshold ="'
+
+    - name: Set object size maximum threshold
+      lineinfile: 'dest=/etc/riak/riak.conf line="object.size.maximum = 500K" regexp: "^object.size.maximum ="'
 ```
 
 #### Building a Cluster
