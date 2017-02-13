@@ -48,7 +48,7 @@
 - name: Set the riak ulimit for Debian
   copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.conf
   tags: Debian
-  when: 'ansible_distribution == "Debian"'
+  when: 'ansible_os_family == "Debian"'
 
 - name: Set the riak ulimit for Ubuntu Trusty
   copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak
