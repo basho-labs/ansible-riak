@@ -32,15 +32,13 @@
 
 - name: install riak.conf with templated configuration
   template: "src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444 backup=yes"
-  notify: restart riak
 
 - name: install riak_shell.config with templated configuration
   template: "src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444"
   when: riak_package == "riak-ts" and riak_shell_nodes is defined
-  notify: restart riak
 
-- name: Make certain Riak is started and set to start on boot
-  service: name=riak enabled=yes state=started
+- name: Reboot Riak to accept the new config and ensure it is enabled to start at bootup
+  service: name=riak enabled=yes state=restarted
 
 - name: Wait for Riak to start up before continuing
   wait_for: "delay=5 timeout=30 host={{ riak_pb_bind_ip }} port={{ riak_pb_port }} state=started"
