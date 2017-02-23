@@ -46,7 +46,7 @@
     - not dist.stat.exists
 
 - name: Set the riak ulimit for Debian
-  copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.conf
+  copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf
   tags: Debian
   when: 'ansible_os_family == "Debian"'
 
