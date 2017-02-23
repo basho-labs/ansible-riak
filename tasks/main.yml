@@ -33,6 +33,10 @@
 - name: install riak.conf with templated configuration
   template: "src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444 backup=yes"
 
+- name: install advanced.config if template is defined
+  template: "src={{ riak_advanced_config_template }} dest=/etc/riak/advanced.config owner=root group=root mode=0444 backup=yes"
+  when: riak_advanced_config_template is defined
+
 - name: install riak_shell.config with templated configuration
   template: "src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444"
   when: riak_package == "riak-ts" and riak_shell_nodes is defined
