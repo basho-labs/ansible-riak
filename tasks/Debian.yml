@@ -1,14 +1,66 @@
 ---
-- name: install riak
-  apt: name={{ riak_package }} state=present
-  when: riak_custom_package == False
+- name: Install Pre-requisites
+  package: name={{ item }} state=present update_cache=yes cache_valid_time=3600
+  tags: Debian
+  with_items:
+  - curl
+  - apt-transport-https
 
-- name: install riak custom
-  command: dpkg --skip-same-version -i {{ riak_package }}
-  register: dpkg_result
-  changed_when: dpkg_result.stdout.startswith('Selecting')
-  when: riak_custom_package != False
+- name: Install JRE
+  package: name={{ riak_java_package }} state=present update_cache=yes cache_valid_time=3600
+  tags: Debian
+  when: 'riak_install_java and riak_java_package is defined'
 
-- name: set the riak ulimit
+- name: Install JRE
+  package: name=default-jre state=present update_cache=yes cache_valid_time=3600
+  tags: Debian
+  when: 'riak_install_java and riak_java_package is undefined'
+
+- name: Check if Riak is installed
+  stat: path=/etc/riak/riak.conf
+  register: dist
+
+- name: Add Package Cloud repository key without validation
+  apt_key: url=https://packagecloud.io/gpg.key state=present validate_certs=no
+  tags: Debian
+  when:
+    - not dist.stat.exists
+    - riak_install_package_cloud
+
+- name: Add Basho Riak repository (hosted at Package Cloud)
+  template: src=deb_repo.list.j2 dest=/etc/apt/sources.list.d/basho_riak.list owner=root group=root mode=0644
+  when:
+    - not dist.stat.exists
+    - riak_install_package_cloud
+
+- name: Install Riak for Debian
+  package: "name={{ riak_package }} state=present update_cache=yes"
+  tags: Debian
+  when: "'deb' not in riak_package"
+
+- name: Install Riak for Debian
+  apt: "deb={{ riak_package }}"
+  tags: Debian
+  when:
+    - "'deb' in riak_package"
+    - not dist.stat.exists
+
+- name: Set the riak ulimit for Debian
+  copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.conf
+  tags: Debian
+  when: 'ansible_os_family == "Debian"'
+
+- name: Set the riak ulimit for Ubuntu Trusty
   copy: src=etc_default_riak_ulimit dest=/etc/default/riak owner=riak group=riak
+  tags: Debian
+  when: 'ansible_distribution_release != "xenial" and ansible_distribution_release != "jessie"'
 
+- name: Set the riak ulimit for Ubuntu Xenial
+  lineinfile: 'dest=/lib/systemd/system/riak.service line="LimitNOFILE=131072" insertafter="^RuntimeDirectory=riak"'
+  tags: Debian
+  when: 'ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie"'
+
+- name: Reload systemd
+  systemd: state=restarted daemon_reload=yes name=riak enabled=yes
+  tags: Debian
+  when: 'ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie"'

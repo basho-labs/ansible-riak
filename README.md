@@ -1,131 +1,166 @@
-ansible-riak
-========
+# Ansible Role for Riak KV & TS
 
-This role will setup Riak on a node. It will ***not*** build a cluster.  In order to build a cluster, use one of the example playbooks defined below.
+[![Build Status](https://travis-ci.org/basho-labs/puppet-riak.svg?branch=master)](https://travis-ci.org/basho-labs/ansible-riak)
+[![Ansible Galaxy](https://img.shields.io/ansible/role/8095.svg?maxAge=2592000)](https://galaxy.ansible.com/basho-labs/riak-kv/)
 
-## Description
+**Ansible Riak** is an Ansible role designed to install & configure Riak KV & TS. In combination with Ansible hosts, it can be used to configure a single node or an [entire cluster](#building-a-cluster).
 
-[Riak](http://basho.com/riak/) is an open source, distributed database that focuses on high availability, horizontal scalability, and *predictable* latency.
+1. [Installation](#installation)
+1. [Documentation](#documentation)
+1. [Examples](#examples)
+1. [Contributing](#contributing)
+  * [An honest disclaimer](#an-honest-disclaimer)
+1. [Roadmap](#roadmap)
+1. [License and Authors](#license-and-authors)
 
-This repository is **community supported**. We both appreciate and need your contribution to keep it stable. For more on how to contribute, [take a look at the contribution process](#contribution).
+## Installation
 
-Thank you for being part of the community! We love you for it.
+### Dependencies
 
-Requirements
-------------
+* Ansible 2.1+
 
-Tested with Riak 1.4.10 on CentOS 6 and Ubuntu Precise.
+### Ansible Galaxy Install
 
-Role Variables
---------------
+`$ ansible-galaxy install basho-labs.riak-kv`
 
-If you have trouble seeing the tables below, please [read the documentation on Github](https://github.com/basho/ansible-riak/blob/master/README.md).
+Then reference the role in your playbooks or other roles using the key `basho-labs.riak-kv`.
+
+### Manual Install
+
+To manually install this role, clone the repository or extract the distribution package to your roles directory.
+
+For example, if you use the default location for roles, the roles directory would be a sibling of your playbook.yml file, `roles/`. If you clone this repository to your roles directory, you would then reference the role with the key `ansible-riak`.
+
+## Documentation
+
+All documentation for this role is included within this section of the README.
+
+### Variables
+
+All of the variables that can be used in this role can be found in the [variable defaults file](defaults/main.yml). To override any of the default variables, all you have to do is set them in the `vars:` section of your playbook.yml or create your own role that defines this role as a dependency, using the same var names used in this role.
+
+### Templates
+
+There are currently four templates included with the role. The most important is the `riak.conf.j2` template, as it configures the operating parameters for Riak KV. If you have specific operating requirements for your ring that differ significantly from the distribution configuration, you can override this template with your own.
+
+There are two different ways to override the default template:
+
+* Override the [riak_conf_template](defaults/main.yml#L14) variable and set it to the absolute / relative path to the template on the local system
+* Create a new role that defines this role as a dependency and save your template file in the templates directory using the same exact name as the template you want to override, in this case `riak.conf.j2`
+
+### Examples
+
+#### Overriding Default Variables via Playbook
+
+```yaml
+---
+- hosts: riak
+  sudo: true
+  roles:
+    - { role: ansible-riak }
+  vars:
+    riak_pb_bind_ip: 10.29.7.192
+    riak_pb_port:    10017
+```
+
+#### Overriding Default Variables via Role Dependency
+
+Internally, we have a [vagrant-ansible package](basho-labs/riak-clients-vagrant) that some of us use to test our client libs. We also [created a role](https://github.com/basho-labs/ansible-roles/blob/b2a93e362a36bdcb0ec5dbbb781cac0b6a1f8f90/README.md#riak-kv-testing) that sets up the environment needed for our library tests and declares [this role as a dependency](https://github.com/basho-labs/ansible-roles/blob/b2a93e362a36bdcb0ec5dbbb781cac0b6a1f8f90/riak_testing/meta/main.yml#L4-L5).
+
+#### Installing Riak TS
+
+```yaml
+---
+- hosts: riakts
+  sudo: true
+  roles:
+    - { role: ansible-riak }
+  vars:
+    riak_package: 'riak-ts'
+    riak_backend: leveldb
+    riak_node_name: "riak@{{ ansible_default_ipv4['address'] }}"
+    riak_shell_group: 'riak-ts'
+    riak_anti_entropy: off
+  tasks:
+    - name: Set object size warning threshold
+      lineinfile: 'dest=/etc/riak/riak.conf line="object.size.warning_threshold = 50K" regexp: "^object.size.warning_threshold ="'
+
+    - name: Set object size maximum threshold
+      lineinfile: 'dest=/etc/riak/riak.conf line="object.size.maximum = 500K" regexp: "^object.size.maximum ="'
+```
+
+#### Building a Cluster
+
+To [build a cluster](http://docs.basho.com/riak/latest/ops/building/basic-cluster-setup/), you need to command your Riak node to [join the cluster](http://docs.basho.com/riak/latest/ops/running/cluster-admin/#join) by providing it the ring leader. With this role, there are two ways you can do this. Via the [command module](http://docs.ansible.com/ansible/command_module.html) and cli tool riak-admin or via the [Ansible Riak module](http://docs.ansible.com/ansible/riak_module.html).
+
+#### Command Module
+
+```yaml
+---
+- hosts: riak
+  sudo: true
+  roles:
+    - { role: ansible-riak }
+  vars:
+    ring_leader: riak1@127.0.0.1
+  tasks:
+    - name: Join the cluster
+      command: '{{ riak_admin }} cluster join {{ ring_leader }}'
+
+    - name: Check Riak Ring
+      command: '{{ riak_admin }} cluster status'
+      register: riak_ring_status
+
+    - name: Plan the cluster
+      command: '{{ riak_admin }} cluster plan'
+      when: riak_ring_status.stdout.find('joining') > 0
+
+    - name: Commit the cluster
+      command: '{{ riak_admin }} cluster commit'
+      when: riak_ring_status.stdout.find('joining') > 0
+```
+
+#### Riak Module
+
+The Riak module has the additional benefit of using the wait_for_ring & wait_for_handoffs functionality.
 
 
-**Pay close attention** to the following variables as they will tune, affect, and possible **make your system unusable**.  They are settings to tune the operating system and filesystem.
+```yaml
+---
+- hosts: riak
+  sudo: true
+  roles:
+    - { role: ansible-riak }
+  vars:
+    ring_leader: riak1@127.0.0.1
+  tasks:
+    - name: Join the cluster
+      riak: command=join target_node={{ ring_leader }}
 
-| Name           | Default Value | Description                        |
-| -------------- | ------------- | -----------------------------------|
-| riak_tune_disks | no | enables  disk tunings |
-| riak_filesystem | ext4         | filesystem used on Riak's data volume |
-| riak_mountpoint| /             | mountpoint where Riak data is installed
-| riak_partition |  /dev/mapper/VolGroup-lv_root   | device/partition that holds mounted Riak data
-| riak_physical_disks| [sda]     | A list of the physical disks that make up Riak's data volume|
+    - name: Check Riak Ring
+      command: 'riak-admin cluster status'
+      register: riak_ring_status
 
+    - name: Plan the cluster
+      riak: command=plan wait_for_ring=300
+      when: riak_ring_status.stdout.find('joining') > 0
 
-For example, if you installed Riak onto a system with a single root partition, then riak_mountpoint would be "/".  If you had a dedicated volume for riak data, riak_mountpoint would be "/path/to/that/mounted/volume."  
+    - name: Commit the cluster
+      riak: command=commit wait_for_handoffs=300
+      when: riak_ring_status.stdout.find('joining') > 0
+```
 
-riak_partition: is the device that the riak_mountpoint is/will be mounted to.  You can gather that by running: 
+## Contributing
 
-	df /var/lib/riak
+This repo's maintainers are engineers at Basho and we welcome your contribution to the project! You can start by reviewing [CONTRIBUTING.md](CONTRIBUTING.md) for information on everything from testing to coding standards.
 
- 
- riak_physical_disks is a list of physical disks that make up the riak_partition.  It could be one, or could be many depending if you are using, RAID, LVM, etc.
- 
- If you wish to avoid any of the tuning, just leave riak_tune_disks to its default value of no.
- 
+## Roadmap
 
+* Nothing planned at this time.
 
-### All of the Variables
+## License and Authors
 
+* Author: Bryan Hunt (https://github.com/binarytemple)
+* Author: Christopher Mancini (https://github.com/christophermancini)
 
-Variables listed with "OS Specific" and "Install specific" have values defined in `vars/<ansible_os_family>.yml`.
-
-
-| Name           | Default Value | Description                        |
-| -------------- | ------------- | -----------------------------------|
-| riak_aae       | on            | turn on Riak's active anti-entropy |
-| riak_backend   | bitcask       | default backend for Riak           |
-| riak_cluster_mgr_bind_ip| 0.0.0.0       | the IP address of the interface used for Riak cluster manager (riak-ee) |
-| riak_custom_beams| false       | a path to pre-compiled custom beams |
-| riak_custom_package| no     | specify a path on the Ansible control, or HTTP URL, to a custom Riak package.|
-| riak_filesystem | ext4         | filesystem that's used on Riak's data volume |
-| riak_handoff_port | 8099       | handoff port                       |
-| riak_handoff_wait | 600       | The number of seconds to wait until hand offs are finished |   
-| riak_http_bind_ip | 0.0.0.0          | The IP address used to listen for Riak HTTP requests. |
-| riak_http_port | 8098          | port that Riak's http interface will listen |
-| riak_iface     | eth0          | interface that Riak will use |
-| riak_ip_addr   | "{{ hostvars[inventory_hostname]['ansible_' + riak_iface]['ipv4']['address'] }}"| shortcut for the ip address associated with riak_iface
-| riak_log_rotate| 5             | number of days for log rotation |
-| riak_mount_options |noatime,barrier=0,errors=remount-ro | optmized mount options for Riak |
-| riak_mountpoint| /             | mountpoint where Riak data is installed|
-| riak_net_speed| 1Gb             |speed of network which Riak using, used to optimize sysctl tunings.|
-| riak_node_name | riak@{{ riak_ip_addr }} | the name you give the Riak node |
-| riak_package_release| 1        | the package release version |
-| riak_partition |  /dev/mapper/VolGroup-lv_root   | device/partition that holds mounted Riak data
-| riak_pb_backlog| 256           | the number of pending protocol buffer connections |
-| riak_pb_bind_ip   | 0.0.0.0          | the IP that is listening for protocol buffer connections
-| riak_pb_port   | 8087          | the port that is listening for protocol buffer connections
-| riak_physical_disks| [sda]     | A list of the physical disks that make up Riak's data volume(s).  Used in tuning some disk parameters. |
-| riak_ring_size | 64            | the number of partitions in your Riak ring. |
-| riak_scheduler | noop          | the disk scheduler to use for your Riak-related disks. |
-| riak_search (solr) | "false"       | enable/disable for configuring Riak search. |
-| riak_tune_disks | no | enables  disk tunings |
-| riak_usr_lib   |OS specific    | the path to Riak libraries.
-| riak_version   | 1.4.10         | version of Riak you want to install..
-
-
-Playbooks
-------------
-
-There are some sample playbooks in the [examples/](https://github.com/basho/ansible-riak/tree/master/examples) directory as well as a typical hosts file.
-Take a look at [setup_riak.yml](https://github.com/basho/ansible-riak/blob/master/examples/setup_riak.yml).
-
-First we set the role to the riak_cluster group as defined in the inventory.  Then we call the [form_cluster.yml](https://github.com/basho/ansible-riak/blob/master/examples/form_cluster.yml) playbook to actually join the cluster.  The following happens:
-
-* the Riak node name of the first node is established
-* all nodes in the group join that node
-* the last node performs a cluster plan, and cluster commit
-
-
-	
-
-Dependencies
-------------
-
-Depends on the [basho.riak-common](https://github.com/basho-labs/ansible-riak-common) role.
-
-
-License
--------
-
-Apache
-
-##Contributions 
-
-Basho Labs repos survive because of community contribution. Here’s how to get started.
-
-* Fork the appropriate sub-projects that are affected by your change
-* Create a topic branch for your change and checkout that branch
-   `git checkout -b some-topic-branch`
-* Make your changes and run the test suite if one is provided (see below)
-* Commit your changes and push them to your fork
-* Open a pull request for the appropriate project
-* Contributors will review your pull request, suggest changes, and merge it when it’s ready and/or offer feedback
-* To report a bug or issue, please open a new issue against this repository
-
-### Maintainers
-* Bryan Hunt ([GitHub](https://github.com/binarytemple), <bhunt@basho.com>)
-* and You! [Read up](https://github.com/basho-labs/the-riak-community/blob/master/config-mgmt-strategy.md) and get involved
-
-You can [read the full guidelines](http://docs.basho.com/riak/latest/community/bugs/) for bug reporting and code contributions on the Riak Docs. And **thank you!** Your contribution is incredible important to us.
+Copyright (c) 2016 Basho Technologies, Inc. Licensed under the Apache License, Version 2.0 (the "License"). For more details, see [License](License).

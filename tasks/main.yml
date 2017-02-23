@@ -1,41 +1,23 @@
 ---
-- name: Add the OS specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
+- name: Execute RedHat OS family specific install
+  include: RedHat.yml
+  when: ansible_os_family == 'RedHat'
 
-- name: copy custom riak package
-  copy: src={{ riak_custom_package }} dest=/tmp
-  when: riak_custom_package != False and riak_custom_package.find('http') == -1
-
-- name: copy custom riak package from remote
-  action: get_url url={{ riak_custom_package }} dest=/tmp/
-  when: riak_custom_package != False and riak_custom_package.find('http') != -1
-
-- name: set riak packagename
-  set_fact: riak_package=/tmp/{{ riak_custom_package|basename }} state=present
-  when: riak_custom_package != False
-
-- name: set riak_ee fact
-  set_fact: riak_ee=yes
-  when: riak_package.find('ee') != -1
-
-# CentOS specific package installations
-- include: RedHat.yml
-  when: ansible_os_family  == "RedHat"
-
-# Ubuntu specific package installations
-- include: Debian.yml
-  when: ansible_os_family  == "Debian"
-
-- name: update pam configuration
-  copy: src=etc_security_limits.d_riak.conf dest=/etc/security/limits.d/riak.conf owner=root group=root mode=0644
+- name: Execute Debian OS family specific install
+  include: Debian.yml
+  when: ansible_os_family == 'Debian'
 
 - name: mount the riak volume with optmized settings
   mount: name={{ riak_mountpoint }} src={{ riak_partition }} opts="{{riak_mount_options}}" fstype="{{riak_filesystem}}" state=mounted
   when: riak_tune_disks
 
-- name: confgure rc.local
-  template: src=etc_rc.local.j2 dest=/etc/rc.local owner=root group=root mode=0755
-  notify: source rclocal
+- name: create script with disk tuning commands
+  template: src=riak_disk_tune.sh.j2 dest=/usr/local/bin/riak_disk_tune.sh owner=root group=root mode=0755
+  notify: run riak_disk_tune
+  when: riak_tune_disks
+
+- name: add line to rc.local to call riak_disk_tune on boot
+  lineinfile: 'dest=/etc/rc.local line="if [ -x /usr/local/bin/riak_disk_tune.sh ]; then /usr/local/bin/riak_disk_tune.sh; fi" insertbefore="^exit 0"'
   when: riak_tune_disks
 
 - name: create sysctl.d
@@ -43,45 +25,26 @@
 
 - name: configure sysctl
   template: src=etc_sysctl.d_riak.conf.j2 dest=/etc/sysctl.d/riak.conf owner=root group=root mode=0644
-  notify:
-    - check proc writeable
-    - update sysctl
 
-- name: copying custom beams
-  copy: src={{ item }} dest="{{ riak_patch_dir }}/"
-  with_fileglob:
-  - "{{riak_custom_beams_dir}}/*.beam"
+- name: copy custom beams
+  synchronize: "src={{ riak_custom_beams_dir }} dest={{ riak_patch_dir }}"
   when: riak_custom_beams_dir is defined
-  notify:
-  - restart riak
-  - wait for http
-  - wait for kv
 
-- name: configure app.config
-  template: src=etc_riak_app.config.j2 dest=/etc/riak/app.config
-  tags: configfiles
-  notify:
-  - restart riak
-  - wait for http
-  - wait for kv
+- name: install riak.conf with templated configuration
+  template: "src={{ riak_conf_template }} dest=/etc/riak/riak.conf owner=root group=root mode=0444 backup=yes"
 
-- name: configure vm.args
-  template: src=etc_riak_vm.args.j2 dest=/etc/riak/vm.args
-  tags: configfiles
-  notify:
-  - restart riak
-  - wait for http
-  - wait for kv
+- name: install riak_shell.config with templated configuration
+  template: "src={{ riak_shell_conf_template }} dest=/etc/riak/riak_shell.config owner=root group=root mode=0444"
+  when: riak_package == "riak-ts" and riak_shell_nodes is defined
 
-- name: start riak
-  service: name=riak enabled=yes state=started
+- name: Reboot Riak to accept the new config and ensure it is enabled to start at bootup
+  service: name=riak enabled=yes state=restarted
 
-- name: wait for port to become active
-  wait_for: port={{ riak_http_port }}
+- name: Wait for Riak to start up before continuing
+  wait_for: "delay=5 timeout=30 host={{ riak_pb_bind_ip }} port={{ riak_pb_port }} state=started"
 
-- name: wait for riak_kv service to start
-  riak: wait_for_service=kv
+- name: Bucket operations
+  include: buckets.yml
 
-- name: ping riak
-  riak: command=ping
-  register: info
+- name: Security operations
+  include: security.yml
