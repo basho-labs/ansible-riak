@@ -9,7 +9,6 @@
 1. [Documentation](#documentation)
 1. [Examples](#examples)
 1. [Contributing](#contributing)
-  * [An honest disclaimer](#an-honest-disclaimer)
 1. [Roadmap](#roadmap)
 1. [License and Authors](#license-and-authors)
 
