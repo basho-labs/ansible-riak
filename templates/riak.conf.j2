@@ -605,7 +605,7 @@ search.solr.jmx_port = 8985
 ##
 ## Acceptable values:
 ##   - text
-search.solr.jvm_options = -d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops
+search.solr.jvm_options = {{ riak_search_solr_jvm_options }}
 
 ## The minimum batch size, in number of Riak objects. Any batches that
 ## are smaller than this amount will not be immediately flushed to Solr,
