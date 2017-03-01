@@ -31,6 +31,7 @@ riak_control:       'off'
 riak_search:        'off'
 
 riak_leveldb_max_mem_percent:   70
+riak_search_solr_jvm_options:   '-d64 -Xms1g -Xmx1g -XX:+UseStringCache -XX:+UseCompressedOops'
 
 riak_net_speed:     1Gb
 
