@@ -38,6 +38,7 @@ riak_anti_entropy: active
 
 riak_security_enabled:  false
 riak_install_java:      true
+riak_init_system:       system
 
 # Debian
 # riak_java_package: default-jre
