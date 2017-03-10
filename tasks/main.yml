@@ -43,6 +43,7 @@
 
 - name: Reboot Riak to accept the new config and ensure it is enabled to start at bootup
   service: name=riak enabled=yes state=restarted
+  when: riak_init_system == 'system'
 
 - name: Wait for Riak to start up before continuing
   wait_for: "delay=5 timeout=30 host={{ riak_pb_bind_ip }} port={{ riak_pb_port }} state=started"
