@@ -51,7 +51,7 @@ riak_init_system:       system
 riak_shell_group: 'riak'
 riak_shell_interface: 'ansible_eth0'
 riak_shell_conf_template: riak_shell.config.j2
-riak_shell_nodes_list: "{% for host in groups[riak_shell_group] %}riak@{{ hostvars[host][riak_shell_interface]['ipv4']['address'] }} {% endfor %}"
+riak_shell_nodes_list: "{% for host in groups[riak_shell_group]|default([]) %}riak@{{ hostvars[host][riak_shell_interface]['ipv4']['address'] }} {% endfor %}"
 riak_shell_nodes: "{{ riak_shell_nodes_list.split() }}"
 
 # disc tuning
