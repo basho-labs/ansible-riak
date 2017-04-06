@@ -63,4 +63,4 @@
 - name: Reload systemd
   systemd: state=restarted daemon_reload=yes name=riak enabled=yes
   tags: Debian
-  when: 'ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie"'
+  when: '(ansible_distribution_release == "xenial" or ansible_distribution_release == "jessie") and (riak_init_system == "system")'
