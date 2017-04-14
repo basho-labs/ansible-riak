@@ -46,7 +46,8 @@ log.error.file = $(platform_log_dir)/error.log
 ##   - on or off
 log.syslog = {{ riak_log_syslog }}
 
-log.syslog.level = {{ riak_log_syslog_level }}
+# commented out until feature is released in Riak
+#log.syslog.level = {{ riak_log_syslog_level }}
 
 ## Whether to enable the crash log.
 ##
