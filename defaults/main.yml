@@ -47,6 +47,12 @@ riak_init_system:       system
 # RHEL
 # riak_java_package: java-1.8.0-openjdk
 
+riak_log_console:       file
+riak_log_console_level: info
+riak_log_syslog:        'off'
+riak_log_syslog_level:  info
+riak_log_crash:         'on'
+
 # riak_shell configuration
 riak_shell_group: 'riak'
 riak_shell_interface: 'ansible_eth0'

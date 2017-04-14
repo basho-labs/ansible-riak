@@ -11,7 +11,7 @@
 ##
 ## Acceptable values:
 ##   - one of: off, file, console, both
-log.console = file
+log.console = {{ riak_log_console }}
 
 ## The severity level of the console log, default is 'info'.
 ##
@@ -19,7 +19,7 @@ log.console = file
 ##
 ## Acceptable values:
 ##   - one of: debug, info, notice, warning, error, critical, alert, emergency, none
-log.console.level = info
+log.console.level = {{ riak_log_console_level }}
 
 ## When 'log.console' is set to 'file' or 'both', the file where
 ## console messages will be logged.
@@ -44,7 +44,9 @@ log.error.file = $(platform_log_dir)/error.log
 ##
 ## Acceptable values:
 ##   - on or off
-log.syslog = off
+log.syslog = {{ riak_log_syslog }}
+
+log.syslog.level = {{ riak_log_syslog_level }}
 
 ## Whether to enable the crash log.
 ##
@@ -52,7 +54,7 @@ log.syslog = off
 ##
 ## Acceptable values:
 ##   - on or off
-log.crash = on
+log.crash = {{ riak_log_crash }}
 
 ## If the crash log is enabled, the file where its messages will
 ## be written.
